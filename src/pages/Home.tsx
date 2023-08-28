@@ -1,8 +1,10 @@
-import { FC } from "react";
+import { FC, Fragment } from "react";
+import SlickList from "../components/SlickList";
 
 const Home : FC = () => {
-    return <>
-    </>
+    return <Fragment>
+        <SlickList />
+    </Fragment>
 }
 
 export default Home

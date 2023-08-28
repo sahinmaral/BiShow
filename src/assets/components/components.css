@@ -1,1 +1,13 @@
 @tailwind components;
+
+.slick-arrow{
+    @apply !flex !items-center !justify-center !rounded-full !w-[50px] !h-[50px] !bg-gray-200 !-mt-5;
+}
+
+.slick-next:before,.slick-prev:before{
+    @apply !text-black;
+}
+
+.slick-prev{
+    @apply z-10;
+}
