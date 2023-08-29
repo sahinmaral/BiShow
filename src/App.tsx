@@ -4,15 +4,17 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import NoPage from "./pages/NoPage";
 import Footer from "./components/Footer";
+import TheatreShowroom from "./pages/TheatreShowroom";
 
 const App: FC = () => {
   return (
     <Fragment>
       <BrowserRouter>
         <Navbar />
-        <main>
+        <main className="mb-[100px]">
           <Routes>
             <Route index element={<Home />} />
+            <Route path="/theatres" element={<TheatreShowroom />} />
             <Route path="*" element={<NoPage />} />
           </Routes>
         </main>

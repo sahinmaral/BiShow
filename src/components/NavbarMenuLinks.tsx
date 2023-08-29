@@ -7,7 +7,6 @@ const NavbarMenuLinks: FC = () => {
   const [isOpened, setIsOpened] = useState<boolean>(false);
   const [pageWidth, setPageWidth] = useState(window.innerWidth);
 
-
   const handleResize = () => {
     setPageWidth(window.innerWidth);
   };
@@ -24,7 +23,7 @@ const NavbarMenuLinks: FC = () => {
     <Fragment>
       <ul
         className={`${
-          isOpened || pageWidth > 640  ? "opacity-100 z-10" : "opacity-0 -z-10"
+          isOpened || pageWidth > 640 ? "opacity-100 z-10" : "opacity-0 -z-10"
         } flex transition-opacity duration-300 sm:border-none max-sm:absolute max-sm:text-center max-sm:left-0 max-sm:top-[80px] max-sm:w-full  sm:flex-row flex-col sm:gap-5 gap-0 list-none`}
       >
         <Link to={"/"}>

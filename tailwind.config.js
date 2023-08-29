@@ -34,7 +34,7 @@ export default {
           900: "#4d268c",
           950: "#30165f",
         },
-        anakiwa: {
+        "anakiwa": {
           50: "#effefc",
           100: "#c7fff9",
           200: "#97fff4",
@@ -47,7 +47,7 @@ export default {
           900: "#0d5354",
           950: "#003033",
         },
-        dolly: {
+        "dolly": {
           50: "#fefee8",
           100: "#ffffc2",
           200: "#fffd8c",
