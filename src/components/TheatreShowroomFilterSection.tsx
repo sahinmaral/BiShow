@@ -1,8 +1,12 @@
-import { FC, useCallback, useEffect, useState } from "react";
-import { faBars, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { FC, useCallback, useEffect, useMemo, useState } from "react";
+import { faBars, faClose, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useDispatch, useSelector } from "react-redux";
-import { getAppState, setModalContent } from "../redux/app/appSlice";
+import {
+  getAppState,
+  setActivityFilter,
+  setModalContent,
+} from "../redux/app/appSlice";
 import ModalContent from "../types/ModalContentType";
 import ModalContentTypeEnum from "../enums/ModalContentTypeEnum";
 
@@ -20,6 +24,7 @@ const TheatreShowroomFilterSection: FC = () => {
 
   useEffect(() => {
     window.addEventListener("resize", handleResize);
+
     return () => {
       window.removeEventListener("resize", handleResize);
     };
@@ -35,11 +40,62 @@ const TheatreShowroomFilterSection: FC = () => {
     [activities]
   );
 
+  const mappedCountryOfActivities = useMemo(() => {
+    return [...activities]
+      .map((activity) => activity.tickets)
+      .reduce((result, arr) => result.concat(arr), [])
+      .map((activityTicket) => activityTicket.city);
+  }, [activities]);
+
+  const mappedLocationOfActivities = useMemo(() => {
+    return [...activities]
+      .map((activity) => activity.tickets)
+      .reduce((result, arr) => result.concat(arr), [])
+      .map((activityTicket) => activityTicket.seances)
+      .reduce((result, arr) => result.concat(arr), [])
+      .map((seance) => seance.location.name);
+  }, [activities]);
+
+  const mappedGenreOfActivities = useMemo(() => {
+    return [...activities].map((activity) => activity.genre);
+  }, [activities]);
+
+  const mappedDateOfActivities = useMemo(() => {
+    //TODO : Lokalizasyon yapilacagi zaman buradaki kod refactor edilmesi gerekir cunku sadece Turkce date donusturme yapiliyor
+    return [...activities]
+      .sort(
+        (a, b) =>
+          new Date(a.startingDate).getTime() -
+          new Date(b.startingDate).getTime()
+      )
+      .map((activity) =>
+        new Date(activity.startingDate).toLocaleDateString("tr-TR", {
+          year: "numeric",
+          month: "long", // 'short' for abbreviated month, 'long' for full month name
+          day: "numeric",
+        })
+      );
+  }, [activities]);
+
   const handleSetModalContent = (modalContent: ModalContent) => {
     dispatch(setModalContent(modalContent));
 
     const targetElement = document.querySelector("html, body") as HTMLElement;
     targetElement.style.overflow = "hidden";
+  };
+
+  const clearActivityFilter = (byWhat: string): void => {
+    const mapOfActivityFilter = new Map([
+      ["Şehir", "city"],
+      ["Mekan", "location"],
+      ["Tür", "genre"],
+      ["Tarih", "startingDate"],
+    ]);
+    const keyOfActivityFilter = mapOfActivityFilter.get(byWhat)!;
+
+    dispatch(
+      setActivityFilter({ ...activityFilter, [keyOfActivityFilter]: undefined })
+    );
   };
 
   return (
@@ -48,8 +104,7 @@ const TheatreShowroomFilterSection: FC = () => {
         isOpened ? "md:h-[140px] h-[80px] " : ""
       }bg-purple-heart-300 rounded-lg p-4 w-full mt-10`}
     >
-      <div className="flex md:hidden justify-between py-3 pe-1">
-        <h1 className="text-xl font-semibold">Filtreleme</h1>
+      <div className="flex md:hidden justify-end py-3 pe-1">
         <button
           className="text-slate-800"
           onClick={() => setIsOpened(!isOpened)}
@@ -66,10 +121,18 @@ const TheatreShowroomFilterSection: FC = () => {
           <div className="flex justify-between">
             <p className="group-hover:hidden">Şehir</p>{" "}
             <p className="hidden group-hover:block">
-              {activityFilter.location === undefined
+              {activityFilter.city === undefined
                 ? "Şehir"
-                : activityFilter.location}
+                : activityFilter.city}
             </p>
+            {activityFilter.city !== undefined && (
+              <button
+                className="hidden group-hover:block hover:text-red-700"
+                onClick={() => clearActivityFilter("Şehir")}
+              >
+                <FontAwesomeIcon icon={faClose} />
+              </button>
+            )}
           </div>
           <button
             className="bg-dolly-300 hover:bg-dolly-200 rounded-md py-2 w-full flex gap-4 justify-center items-center"
@@ -78,12 +141,7 @@ const TheatreShowroomFilterSection: FC = () => {
                 title: "Şehir",
                 isOpened: true,
                 modalType: ModalContentTypeEnum.FilterActivity,
-                datas: getNonDuplicatedArray(
-                  [...activities]
-                    .map((activity) => activity.tickets)
-                    .reduce((result, arr) => result.concat(arr), [])
-                    .map((activityTicket) => activityTicket.city)
-                ),
+                datas: getNonDuplicatedArray(mappedCountryOfActivities),
               })
             }
           >
@@ -99,6 +157,14 @@ const TheatreShowroomFilterSection: FC = () => {
                 ? "Mekan"
                 : activityFilter.location}
             </p>
+            {activityFilter.location !== undefined && (
+              <button
+                className="hidden group-hover:block hover:text-red-700"
+                onClick={() => clearActivityFilter("Mekan")}
+              >
+                <FontAwesomeIcon icon={faClose} />
+              </button>
+            )}
           </div>
           <button
             className="group bg-dolly-300 hover:bg-dolly-200 rounded-md py-2 w-full flex gap-4 justify-center items-center"
@@ -107,14 +173,7 @@ const TheatreShowroomFilterSection: FC = () => {
                 title: "Mekan",
                 isOpened: true,
                 modalType: ModalContentTypeEnum.FilterActivity,
-                datas: getNonDuplicatedArray(
-                  [...activities]
-                    .map((activity) => activity.tickets)
-                    .reduce((result, arr) => result.concat(arr), [])
-                    .map((activityTicket) => activityTicket.seances)
-                    .reduce((result, arr) => result.concat(arr), [])
-                    .map((seance) => seance.location.name)
-                ),
+                datas: getNonDuplicatedArray(mappedLocationOfActivities),
               })
             }
           >
@@ -130,6 +189,14 @@ const TheatreShowroomFilterSection: FC = () => {
                 ? "Tür"
                 : activityFilter.genre}
             </p>
+            {activityFilter.genre !== undefined && (
+              <button
+                className="hidden group-hover:block hover:text-red-700"
+                onClick={() => clearActivityFilter("Tür")}
+              >
+                <FontAwesomeIcon icon={faClose} />
+              </button>
+            )}
           </div>
           <button
             className="bg-dolly-300 hover:bg-dolly-200 rounded-md py-2 w-full flex gap-4 justify-center items-center"
@@ -138,9 +205,7 @@ const TheatreShowroomFilterSection: FC = () => {
                 title: "Tür",
                 isOpened: true,
                 modalType: ModalContentTypeEnum.FilterActivity,
-                datas: getNonDuplicatedArray(
-                  [...activities].map((activity) => activity.genre)
-                ),
+                datas: getNonDuplicatedArray(mappedGenreOfActivities),
               })
             }
           >
@@ -154,8 +219,16 @@ const TheatreShowroomFilterSection: FC = () => {
             <p className="hidden group-hover:block">
               {activityFilter.startingDate === undefined
                 ? "Tarih"
-                : activityFilter.startingDate.toISOString()}
+                : activityFilter.startingDate.toString()}
             </p>
+            {activityFilter.startingDate !== undefined && (
+              <button
+                className="hidden group-hover:block hover:text-red-700"
+                onClick={() => clearActivityFilter("Tarih")}
+              >
+                <FontAwesomeIcon icon={faClose} />
+              </button>
+            )}
           </div>
           <button
             className="group bg-dolly-300 hover:bg-dolly-200 rounded-md py-2 w-full flex gap-4 justify-center items-center"
@@ -164,25 +237,7 @@ const TheatreShowroomFilterSection: FC = () => {
                 title: "Tarih",
                 isOpened: true,
                 modalType: ModalContentTypeEnum.FilterActivity,
-                //datas: [],
-                datas: getNonDuplicatedArray(
-                  [...activities]
-                    .sort(
-                      (a, b) =>
-                        new Date(a.startingDate).getTime() -
-                        new Date(b.startingDate).getTime()
-                    )
-                    .map((activity) =>
-                      new Date(activity.startingDate).toLocaleDateString(
-                        "tr-TR",
-                        {
-                          year: "numeric",
-                          month: "long", // 'short' for abbreviated month, 'long' for full month name
-                          day: "numeric",
-                        }
-                      )
-                    )
-                ),
+                datas: getNonDuplicatedArray(mappedDateOfActivities),
               })
             }
           >

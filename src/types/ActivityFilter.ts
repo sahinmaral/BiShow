@@ -1,5 +1,6 @@
 type ActivityFilter = {
   type?: string;
+  city?:string;
   genre?: string;
   location?: string;
   startingDate?: Date;

@@ -26,6 +26,7 @@ export const appSlice = createSlice({
       action: PayloadAction<ActivityFilter>
     ) => {
       state.activityFilter = action.payload;
+      console.log(action.payload)
     },
     setActivities: (state: AppStateType, action: PayloadAction<Activity[]>) => {
       state.activities = action.payload;
@@ -43,7 +44,7 @@ export const appSlice = createSlice({
   },
 });
 
-// Action creators are generated for each case reducer function
+
 export const {
   setActivityFilter,
   setActivities,

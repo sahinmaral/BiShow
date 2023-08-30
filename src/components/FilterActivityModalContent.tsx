@@ -8,10 +8,12 @@ import { v4 as uuidv4 } from "uuid";
 
 type FilterActivityModalContentProps = {
   modalContent: ModalContent;
+  updateActivityFilter : (value: string) => void
 };
 
 const FilterActivityModalContent: FC<FilterActivityModalContentProps> = ({
   modalContent,
+  updateActivityFilter
 }) => {
   const dispatch = useDispatch();
 
@@ -24,8 +26,10 @@ const FilterActivityModalContent: FC<FilterActivityModalContentProps> = ({
   };
 
   const handleSelectOption = (event:ChangeEvent<HTMLInputElement>) => {
-    console.log("test")
+    const targetElement = event.target as HTMLInputElement
+    updateActivityFilter(targetElement.value);
   }
+
 
   return (
     <div className="relative bg-white rounded-lg shadow dark:bg-gray-700 w-[400px] h-[500px] overflow-y-scroll">

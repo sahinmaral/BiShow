@@ -26,7 +26,7 @@ const TheatreShowroom: FC = () => {
   const dispatch = useDispatch();
 
   const filteredActivities = useMemo(() => {
-    const { type, genre, location, startingDate } = state.activityFilter;
+    const { type, genre, location, startingDate, city } = state.activityFilter;
 
     let filteredData = state.activities;
     if (type !== undefined)
@@ -35,19 +35,39 @@ const TheatreShowroom: FC = () => {
     if (genre !== undefined)
       filteredData = filteredData.filter((item) => item.genre === genre);
 
-    if (location !== undefined)
+    if (location !== undefined) {
       filteredData = filteredData.filter(
         (item) =>
-          item.tickets.filter((ticket) => ticket.city === location).length > 0
+          item.tickets.filter(
+            (ticket) =>
+              ticket.seances.filter(
+                (seance) => seance.location.name === location
+              ).length > 0
+          ).length > 0
       );
+    }
 
-    if (startingDate !== undefined)
+    if (city !== undefined) {
       filteredData = filteredData.filter(
-        (item) => item.startingDate === startingDate
+        (item) =>
+          item.tickets.filter((ticket) => ticket.city === city).length > 0
       );
+    }
 
-    return filteredData
-  }, [state.activityFilter,state.activities]);
+    //TODO : Lokalizasyon yapilacagi zaman buradaki kod refactor edilmesi gerekir cunku sadece Turkce date donusturme yapiliyor
+    if (startingDate !== undefined) {
+      filteredData = filteredData.filter(
+        (item) =>
+          new Date(item.startingDate).toLocaleDateString("tr-TR", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          }) === startingDate.toString()
+      );
+    }
+
+    return filteredData;
+  }, [state.activityFilter, state.activities]);
 
   const loadMore = () => {
     loadMoreActivities(lastVisibleItem!).then((result) => {

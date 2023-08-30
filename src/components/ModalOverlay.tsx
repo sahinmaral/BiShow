@@ -1,4 +1,4 @@
-import { FC, MouseEvent } from "react";
+import { FC, MouseEvent, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAppState, setModalVisibilityToggle } from "../redux/app/appSlice";
 import ModalContent from "./ModalContent";
@@ -8,7 +8,6 @@ const ModalOverlay: FC = () => {
   const dispatch = useDispatch();
 
   const handleCloseModal = (event: MouseEvent<HTMLDivElement>) => {
-    event.stopPropagation();
     dispatch(setModalVisibilityToggle());
 
     const targetElement = document.querySelector("html, body") as HTMLElement;
@@ -20,11 +19,11 @@ const ModalOverlay: FC = () => {
       id="modal"
       className={`${
         modalContent.isOpened ? "bg-gray-200 bg-opacity-50" : "hidden"
-      } fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full`}
+      } fixed top-0 left-0 right-0 z-50 w-full flex justify-center items-center p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full`}
       onClick={handleCloseModal}
     >
       <div
-        className="relative w-full h-full flex justify-center items-center"
+        className="relative"
         id="modalOverlay"
         onClick={(event) => event.stopPropagation()}
       >
