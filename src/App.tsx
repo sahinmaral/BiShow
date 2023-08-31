@@ -6,6 +6,7 @@ import NoPage from "./pages/NoPage";
 import Footer from "./components/Footer";
 import TheatreShowroom from "./pages/TheatreShowroom";
 import ModalOverlay from "./components/ModalOverlay";
+import TheatreDetail from "./pages/TheatreDetail";
 
 const App: FC = () => {
   return (
@@ -15,7 +16,8 @@ const App: FC = () => {
         <main className="mb-[100px]">
           <Routes>
             <Route index element={<Home />} />
-            <Route path="/theatres" element={<TheatreShowroom />} />
+            <Route path="/tiyatro" element={<TheatreShowroom />} />
+            <Route path="/tiyatro/:id" element={<TheatreDetail />} />
             <Route path="*" element={<NoPage />} />
           </Routes>
         </main>

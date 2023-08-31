@@ -26,7 +26,6 @@ export const appSlice = createSlice({
       action: PayloadAction<ActivityFilter>
     ) => {
       state.activityFilter = action.payload;
-      console.log(action.payload)
     },
     setActivities: (state: AppStateType, action: PayloadAction<Activity[]>) => {
       state.activities = action.payload;

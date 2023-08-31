@@ -119,7 +119,7 @@ const TheatreShowroom: FC = () => {
               <div className="flex items-center">
                 <FontAwesomeIcon icon={faCircle} className="w-[5px]" />
                 <Link
-                  to={"/theatres"}
+                  to={"/tiyatro"}
                   className="ml-1 text-base font-medium text-gray-700 hover:text-blue-600 md:ml-2 dark:text-gray-400 dark:hover:text-white"
                 >
                   Tiyatro
@@ -135,21 +135,17 @@ const TheatreShowroom: FC = () => {
       <div className="grid md:grid-cols-4 grid-cols-2 mt-5 gap-5">
         {filteredActivities.map((theatre) => {
           return (
-            <div
-              className="max-w-sm bg-white rounded-lg dark:bg-gray-800"
-              key={uuidv4()}
-            >
-              <a href="#">
+            <Link to={`/tiyatro/${theatre.id}`} key={uuidv4()} className="group">
+              <div className="max-w-sm bg-white rounded-lg dark:bg-gray-800">
                 <img className="rounded-lg" src={theatre.thumbnail} alt="" />
-              </a>
-              <div className="py-5">
-                <Link to={`/theatres/${theatre.id}`}>
-                  <h5 className="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white">
+
+                <div className="py-5">
+                  <h5 className="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-purple-heart-500 group-hover:drop-shadow-lg">
                     {theatre.name}
                   </h5>
-                </Link>
+                </div>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>

@@ -31,15 +31,19 @@ import {
   Query,
   QueryDocumentSnapshot,
   collection,
+  doc,
+  getDoc,
   getDocs,
   getFirestore,
   limit,
   orderBy,
   query,
   startAfter,
+  where,
 } from "firebase/firestore";
 import Activity from "../../types/Activity";
 import ActivityQueryResult from "../../types/ActivityQueryResult";
+import { mapActivityFromDocumentData } from "../../helpers/firebaseHelper";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_APIKEY,
@@ -60,23 +64,14 @@ const db = getFirestore(app);
 
 const activityRef = collection(db, "activities");
 
-const getActivityDocsByQuery = (query: Query<DocumentData, DocumentData>) : Promise<ActivityQueryResult> => {
+const getActivityDocsByQuery = (
+  query: Query<DocumentData, DocumentData>
+): Promise<ActivityQueryResult> => {
   return getDocs(query)
     .then((queryResult) => {
       const mappedData: Activity[] = queryResult.docs.map((doc) => {
         const docObject = doc.data();
-        return {
-          id: docObject.id,
-          name: docObject.name,
-          genre: docObject.genre,
-          activityType: docObject.activityType,
-          duration: docObject.duration,
-          thumbnail: docObject.thumbnail,
-          description: docObject.description,
-          startingDate: docObject.startingDate,
-          endDate: docObject.endDate,
-          tickets:docObject.tickets
-        };
+        return mapActivityFromDocumentData(docObject);
       });
       return {
         activities: mappedData,
@@ -93,6 +88,16 @@ const getActivities = async () => {
   return getActivityDocsByQuery(activityQuery);
 };
 
+const getActivitiesByGenreName = async (genreName: string) => {
+  const activityQuery = query(
+    activityRef,
+    where("genre", "==", genreName),
+    orderBy("id"),
+    limit(6)
+  );
+  return getActivityDocsByQuery(activityQuery);
+};
+
 const loadMoreActivities = async (
   lastVisibleItem: QueryDocumentSnapshot<DocumentData, DocumentData>
 ) => {
@@ -106,4 +111,11 @@ const loadMoreActivities = async (
   return getActivityDocsByQuery(activityQuery);
 };
 
-export { getActivities, loadMoreActivities };
+const getActivityById = async (id: string) => {
+  const docRef = doc(db, "activities", id);
+  const docSnap = await getDoc(docRef);
+
+  return docSnap;
+};
+
+export { getActivities, loadMoreActivities, getActivityById,getActivitiesByGenreName };

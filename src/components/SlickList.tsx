@@ -57,7 +57,7 @@ const SlickList: FC<SlickListProps> = ({ mainTitle, mainRedirectUrl,data }) => {
             to={mainRedirectUrl}
             className="font-semibold text-gray-500 hover:text-gray-700"
           >
-            view all
+            tamamını görüntüle
           </Link>
         </div>
         <Slider {...settings}>

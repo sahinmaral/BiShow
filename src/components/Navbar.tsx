@@ -6,7 +6,7 @@ const Navbar: FC = () => {
   return (
     <nav className="flex justify-between sm:items-center p-4 border-b border-gray-200">
       <div className="flex gap-3">
-        <img src="./vite.svg" className="h-10" alt="Brand" />
+        <img src="/vite.svg" className="h-10" alt="Brand" />
         <span className="text-2xl font-bold whitespace-nowrap">
           <span className="text-cornflower-blue-700">Bi</span>
           <span>Show</span>

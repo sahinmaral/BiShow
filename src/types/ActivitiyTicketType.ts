@@ -2,7 +2,7 @@ export type ActivitySeanceType = {
   startDate: Date;
   endDate: Date;
   isSoldOut: boolean;
-  buyUrl: string;
+  url: string;
   location: SeanceLocationType;
 };
 
