@@ -1,4 +1,4 @@
-import { FC, Fragment, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import Activity from "../types/Activity";
 import { getActivitiesByGenreName } from "../services/database/databaseService";
 import { Link } from "react-router-dom";

@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, Fragment, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import TheatreShowroomFilterSection from "../components/TheatreShowroomFilterSection";
 import { faCircle } from "@fortawesome/free-solid-svg-icons";
@@ -14,8 +14,13 @@ import {
   getAppState,
   setActivities,
   setActivityFilter,
+  setErrorMessageOfFetchResult,
+  setIsLoadingOfFetchResult,
 } from "../redux/app/appSlice";
 import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
+import Loading from "./Loading";
+import CustomAlert from "../components/CustomAlert";
+import AlertTypeEnum from "../enums/AlertTypeEnum";
 
 const TheatreShowroom: FC = () => {
   const state = useSelector(getAppState);
@@ -93,63 +98,91 @@ const TheatreShowroom: FC = () => {
   }, [lastVisibleItem]);
 
   useEffect(() => {
-    getActivities().then((result) => {
+    dispatch(setIsLoadingOfFetchResult(true));
+
+    getActivities()
+    .then((result) => {
       setLastVisibleItem(result.lastVisibleItem);
       dispatch(setActivities(result.activities));
       dispatch(setActivityFilter({ type: "Tiyatro" }));
-    });
+    })
+    .catch((error) => {
+      dispatch(setErrorMessageOfFetchResult(error.message));
+    })
+    .finally(() => {
+      dispatch(setIsLoadingOfFetchResult(false));
+    })
   }, []);
 
   return (
-    <div className="container mx-auto">
-      <div className="flex justify-between border-b border-gray-400 py-5">
-        <h1 className="text-4xl font-semibold">Tiyatro</h1>
+    <Fragment>
+      {state.fetchResultAtPage.isLoading && <Loading />}
+      {state.fetchResultAtPage.errorMessage && (
+        <CustomAlert
+          alertType={AlertTypeEnum.Danger}
+          message={state.fetchResultAtPage.errorMessage}
+        />
+      )}
+      {!state.fetchResultAtPage.isLoading && (
+        <div className="container mx-auto">
+          <div className="flex justify-between border-b border-gray-400 py-5">
+            <h1 className="text-4xl font-semibold">Tiyatro</h1>
 
-        <nav className="flex" aria-label="Breadcrumb">
-          <ol className="inline-flex items-center space-x-1 md:space-x-3">
-            <li className="inline-flex items-center">
-              <Link
-                to={"/"}
-                className="inline-flex items-center text-base font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white"
-              >
-                Anasayfa
-              </Link>
-            </li>
-            <li>
-              <div className="flex items-center">
-                <FontAwesomeIcon icon={faCircle} className="w-[5px]" />
+            <nav className="flex" aria-label="Breadcrumb">
+              <ol className="inline-flex items-center space-x-1 md:space-x-3">
+                <li className="inline-flex items-center">
+                  <Link
+                    to={"/"}
+                    className="inline-flex items-center text-base font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white"
+                  >
+                    Anasayfa
+                  </Link>
+                </li>
+                <li>
+                  <div className="flex items-center">
+                    <FontAwesomeIcon icon={faCircle} className="w-[5px]" />
+                    <Link
+                      to={"/tiyatro"}
+                      className="ml-1 text-base font-medium text-gray-700 hover:text-blue-600 md:ml-2 dark:text-gray-400 dark:hover:text-white"
+                    >
+                      Tiyatro
+                    </Link>
+                  </div>
+                </li>
+              </ol>
+            </nav>
+          </div>
+
+          <TheatreShowroomFilterSection />
+
+          <div className="grid md:grid-cols-4 grid-cols-2 mt-5 gap-5">
+            {filteredActivities.map((theatre) => {
+              return (
                 <Link
-                  to={"/tiyatro"}
-                  className="ml-1 text-base font-medium text-gray-700 hover:text-blue-600 md:ml-2 dark:text-gray-400 dark:hover:text-white"
+                  to={`/tiyatro/${theatre.id}`}
+                  key={uuidv4()}
+                  className="group"
                 >
-                  Tiyatro
+                  <div className="max-w-sm bg-white rounded-lg dark:bg-gray-800">
+                    <img
+                      className="rounded-lg"
+                      src={theatre.thumbnail}
+                      alt=""
+                    />
+
+                    <div className="py-5">
+                      <h5 className="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-purple-heart-500 group-hover:drop-shadow-lg">
+                        {theatre.name}
+                      </h5>
+                    </div>
+                  </div>
                 </Link>
-              </div>
-            </li>
-          </ol>
-        </nav>
-      </div>
-
-      <TheatreShowroomFilterSection />
-
-      <div className="grid md:grid-cols-4 grid-cols-2 mt-5 gap-5">
-        {filteredActivities.map((theatre) => {
-          return (
-            <Link to={`/tiyatro/${theatre.id}`} key={uuidv4()} className="group">
-              <div className="max-w-sm bg-white rounded-lg dark:bg-gray-800">
-                <img className="rounded-lg" src={theatre.thumbnail} alt="" />
-
-                <div className="py-5">
-                  <h5 className="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-purple-heart-500 group-hover:drop-shadow-lg">
-                    {theatre.name}
-                  </h5>
-                </div>
-              </div>
-            </Link>
-          );
-        })}
-      </div>
-    </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </Fragment>
   );
 };
 

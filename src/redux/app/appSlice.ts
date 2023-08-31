@@ -13,7 +13,11 @@ const initialState: AppStateType = {
     title: "",
     isOpened: false,
     datas: [],
-    modalType: null
+    modalType: null,
+  },
+  fetchResultAtPage: {
+    isLoading: false,
+    errorMessage: "",
   },
 };
 
@@ -40,15 +44,28 @@ export const appSlice = createSlice({
       const modalContent = state.modalContent as ModalContent;
       modalContent.isOpened = !modalContent.isOpened;
     },
+    setIsLoadingOfFetchResult: (
+      state: AppStateType,
+      action: PayloadAction<boolean>
+    ) => {
+      state.fetchResultAtPage.isLoading = action.payload;
+    },
+    setErrorMessageOfFetchResult: (
+      state: AppStateType,
+      action: PayloadAction<string>
+    ) => {
+      state.fetchResultAtPage.errorMessage = action.payload;
+    },
   },
 });
-
 
 export const {
   setActivityFilter,
   setActivities,
   setModalContent,
   setModalVisibilityToggle,
+  setIsLoadingOfFetchResult,
+  setErrorMessageOfFetchResult,
 } = appSlice.actions;
 
 export const getAppState = (state: RootState) => state.app;

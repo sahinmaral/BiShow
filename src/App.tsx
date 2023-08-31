@@ -13,7 +13,7 @@ const App: FC = () => {
     <Fragment>
       <BrowserRouter>
         <Navbar />
-        <main className="mb-[100px]">
+        <main className="mb-[100px] relative">
           <Routes>
             <Route index element={<Home />} />
             <Route path="/tiyatro" element={<TheatreShowroom />} />

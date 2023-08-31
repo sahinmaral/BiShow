@@ -2,7 +2,6 @@ import { FC, Fragment, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import Activity from "../types/Activity";
 import { getActivityById } from "../services/database/databaseService";
-import { mapActivityFromDocumentData } from "../helpers/firebaseHelper";
 import { ActivitySeanceType } from "../types/ActivitiyTicketType";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
@@ -10,9 +9,22 @@ import { v4 as uuidv4 } from "uuid";
 import TheatreDetailTabs from "../components/TheatreDetailTabs";
 import TheatreTicketsSection from "../components/TheatreTicketsSection";
 import SameGenreTheatreRecommendations from "../components/SameGenreTheatreRecommendations";
+import {
+  getAppState,
+  setErrorMessageOfFetchResult,
+  setIsLoadingOfFetchResult,
+} from "../redux/app/appSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { mapActivityFromDocumentData } from "../helpers/firebaseHelper";
+import Loading from "./Loading";
+import CustomAlert from "../components/CustomAlert";
+import AlertTypeEnum from "../enums/AlertTypeEnum";
 
 const TheatreDetail: FC = () => {
   const { id } = useParams();
+
+  const { fetchResultAtPage } = useSelector(getAppState);
+  const dispatch = useDispatch();
 
   const [activityDetail, setActivityDetail] = useState<Activity | undefined>();
 
@@ -54,21 +66,36 @@ const TheatreDetail: FC = () => {
   }, [activityDetail]);
 
   useEffect(() => {
+    dispatch(setIsLoadingOfFetchResult(true));
     getActivityById(id!)
       .then((docSnap) => {
         if (docSnap.exists())
           setActivityDetail(mapActivityFromDocumentData(docSnap.data()));
       })
-      .catch((err) => {
-        throw err;
+      .catch((error) => {
+        dispatch(setErrorMessageOfFetchResult(error.message));
+      })
+      .finally(() => {
+        dispatch(setIsLoadingOfFetchResult(false));
       });
-  }, []);
+  }, [id]);
 
   return (
     <Fragment>
-      {activityDetail === undefined ? (
-        <p>Tiyatro bulunamadi</p>
-      ) : (
+      {fetchResultAtPage.isLoading && <Loading />}
+      {fetchResultAtPage.errorMessage && (
+        <CustomAlert
+          alertType={AlertTypeEnum.Danger}
+          message={fetchResultAtPage.errorMessage}
+        />
+      )}
+      {!fetchResultAtPage.isLoading && activityDetail === undefined && (
+        <CustomAlert
+          alertType={AlertTypeEnum.Danger}
+          message={`${id} ID ye sahip tiyatro bulunamadı.`}
+        />
+      )}
+      {!fetchResultAtPage.isLoading && activityDetail !== undefined && (
         <Fragment>
           <div className="relative inline-block">
             <div className="absolute flex md:flex-row flex-col top-0 left-0 w-full h-full pointer-events-none bg-black bg-opacity-70">
@@ -108,7 +135,11 @@ const TheatreDetail: FC = () => {
                     })}
                   </span>
                 </p>
-                <p className="flex gap-3 items-center md:ms-4 ms-0">
+                <p
+                  className={`${
+                    activityDetail.duration === null ? "hidden" : "flex"
+                  } gap-3 items-center md:ms-4 ms-0`}
+                >
                   <FontAwesomeIcon icon={faClock} />
                   <span>{activityDetail.duration}</span>
                 </p>
@@ -117,7 +148,7 @@ const TheatreDetail: FC = () => {
             </div>
             <img
               className="block w-screen sm:h-[550px] md:h-auto h-[600px]"
-              src="https://www.um.edu.mt/__data/assets/image/0011/332957/varieties/banner.jpg"
+              src="/theatre-detail-banner.jpg"
               alt="Image with Gray Overlay"
             />
           </div>

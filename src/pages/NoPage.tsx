@@ -1,41 +1,34 @@
-import {
-  faArrowLeft,
-  faExclamationCircle,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC } from "react";
 import { Link } from "react-router-dom";
 
 const NoPage: FC = () => {
   return (
-    <section className="bg-white dark:bg-gray-900 ">
-      <div className="container flex items-center min-h-[calc(100vh-100px)] px-6 py-12 mx-auto">
-        <div className="flex flex-col items-center max-w-sm mx-auto text-center">
-          <p className="p-3 text-sm font-medium text-blue-500 rounded-full bg-blue-50 dark:bg-gray-800">
-            <FontAwesomeIcon icon={faExclamationCircle} size="xl" />
-          </p>
-          <h1 className="mt-3 text-2xl font-semibold text-gray-800 dark:text-white md:text-3xl">
-            Page not found
+    <div className="flex flex-col bg-white">
+      <img
+        src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1548&q=80"
+        alt=""
+        className="object-cover w-full h-64"
+      />
+
+      <div className="flex items-center justify-center flex-1">
+        <div className="max-w-xl px-4 py-8 mx-auto text-center">
+          <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            Aradığınız sayfayı bulamadık.
           </h1>
-          <p className="mt-4 text-gray-500 dark:text-gray-400">
-            The page you are looking for doesn't exist. Here are some helpful
-            links:
+
+          <p className="mt-4 text-gray-500">
+            Tekrar aramayı ya da anasayfaya gitmeyi deneyin.
           </p>
 
-          <div className="flex items-center w-full mt-6 gap-x-3 shrink-0 sm:w-auto">
-            <button className="flex items-center justify-center w-1/2 px-5 py-2 text-sm text-gray-700 transition-colors duration-200 bg-white border rounded-lg gap-x-2 sm:w-auto dark:hover:bg-gray-800 dark:bg-gray-900 hover:bg-gray-100 dark:text-gray-200 dark:border-gray-700">
-              <FontAwesomeIcon icon={faArrowLeft} size="sm" />
-
-              <span>Go back</span>
-            </button>
-
-            <Link to={"/"} className="w-1/2 px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200 bg-blue-500 rounded-lg shrink-0 sm:w-auto hover:bg-blue-600 dark:hover:bg-blue-500 dark:bg-blue-600">
-              Take me home
-            </Link>
-          </div>
+          <Link
+            to="/"
+            className="inline-block px-5 py-3 mt-6 text-sm font-medium text-white bg-indigo-600 rounded hover:bg-indigo-700 focus:outline-none focus:ring"
+          >
+            Anasayfaya git
+          </Link>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 
