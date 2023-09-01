@@ -15,4 +15,12 @@ const mapActivityFromDocumentData = (docObject: DocumentData) => {
   };
 };
 
-export { mapActivityFromDocumentData };
+const mapBoughtTicketFromDocumentData = (docObject: DocumentData) => {
+  return {
+    userId: docObject.userId,
+    activityId: docObject.activityId,
+    seanceId: docObject.seanceId,
+  };
+};
+
+export { mapActivityFromDocumentData,mapBoughtTicketFromDocumentData };

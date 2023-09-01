@@ -1,41 +1,89 @@
-import { FC, Fragment, useState } from "react";
-import { ActivityTicketType } from "../types/ActivitiyTicketType";
+import { FC, Fragment, useCallback, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import ActivitySavePopover from "./ActivitySavePopover";
+import {
+  getBoughtedTicketOfUser,
+  saveBoughtedTicketOfUser,
+} from "../services/database/databaseService";
+import { useSelector } from "react-redux";
+import { getAuthState } from "../redux/auth/authSlice";
+import Activity from "../types/Activity";
+import { useToaster } from "../context/ToasterProvider";
+import BoughtTicketType from "../types/BoughtTicketType";
+import { mapBoughtTicketFromDocumentData } from "../helpers/firebaseHelper";
 
 type TheatreTicketsSectionProps = {
-  tickets: ActivityTicketType[];
-  activityName: string;
+  activity: Activity;
 };
 
 const TheatreTicketsSection: FC<TheatreTicketsSectionProps> = ({
-  tickets,
-  activityName,
+  activity,
 }) => {
   const [focusedSeanceUrl, setFocusedSeanceUrl] = useState<string>("");
+
+  const { setSuccessWithMessage, setDangerWithMessage } = useToaster();
+
+  const { user } = useSelector(getAuthState);
+
+  const [boughtedTickets, setBoughtedTickets] = useState<BoughtTicketType[]>(
+    []
+  );
+
+  useEffect(() => {
+    if (user !== null) {
+      getBoughtedTicketOfUser(user.id, activity.id).then((result) => {
+        result.docs.forEach((doc) => {
+          setBoughtedTickets([
+            ...boughtedTickets,
+            mapBoughtTicketFromDocumentData(doc.data()),
+          ]);
+        });
+      });
+    }
+  }, []);
+
+  const getSeanceBoughtState = useCallback(
+    (seanceId: string) => {
+      return (
+        boughtedTickets.filter((ticket) => ticket.seanceId === seanceId)
+          .length !== 0
+      );
+    },
+    [boughtedTickets]
+  );
 
   const clearFocusedSeanceUrl = (): void => {
     setFocusedSeanceUrl("");
   };
 
-  const saveFocusedSeanceUrl = () => {
-    //TODO : Firebase kullanici uzerinde kaydedilecek.
+  const saveFocusedSeanceUrl = (seanceId: string) => {
+    if (user === null) {
+      setDangerWithMessage("Seansı kaydetmeniz için giriş yapmanız gerekiyor");
+    } else {
+      saveBoughtedTicketOfUser({
+        userId: user.id,
+        activityId: activity.id,
+        seanceId: seanceId,
+      }).then(() => {
+        setSuccessWithMessage("Seansınızı başarılı bir şekilde kaydettiniz");
+      });
+    }
   };
 
   return (
     <Fragment>
       <h1 className="text-2xl font-semibold">
-        {activityName} Biletleri ve Fiyatları
+        {activity.name} Biletleri ve Fiyatları
       </h1>
 
-      {tickets.map((ticket) => {
+      {activity.tickets.map((ticket) => {
         return (
           <div className="rounded-lg w-full shadow-lg p-4" key={uuidv4()}>
             <h2 className="text-2xl font-semibold">{ticket.city}</h2>
             <h4 className="uppercase font-normal">
-              <FontAwesomeIcon icon={faLocationDot} /> {activityName}{" "}
+              <FontAwesomeIcon icon={faLocationDot} /> {activity.name}{" "}
               {ticket.city} Biletleri
             </h4>
             {ticket.seances.map((seance) => {
@@ -90,7 +138,7 @@ const TheatreTicketsSection: FC<TheatreTicketsSectionProps> = ({
                   </div>
 
                   <div className="flex items-end">
-                    {!seance.isSoldOut ? (
+                    {!seance.isSoldOut && !getSeanceBoughtState(seance.id) ? (
                       <div className="relative">
                         <a
                           onClick={() => {
@@ -103,14 +151,21 @@ const TheatreTicketsSection: FC<TheatreTicketsSectionProps> = ({
                           Biletini Al
                         </a>
                         {focusedSeanceUrl === seance.url && (
-                          <ActivitySavePopover clearFocusedSeanceUrl={clearFocusedSeanceUrl} />
+                          <ActivitySavePopover
+                            clearFocusedSeanceUrl={clearFocusedSeanceUrl}
+                            saveFocusedSeanceUrl={() =>
+                              saveFocusedSeanceUrl(seance.id)
+                            }
+                          />
                         )}
                       </div>
                     ) : (
                       <button
                         className={`bg-opacity-30 max-md:w-full text-center hover:cursor-default uppercase focus:outline-none text-white bg-green-600  font-medium rounded-lg text-sm px-10 py-3 mr-2 mb-2`}
                       >
-                        Biletini Al
+                        {getSeanceBoughtState(seance.id)
+                          ? "Bileti zaten aldınız"
+                          : "Biletini Al"}
                       </button>
                     )}
                   </div>

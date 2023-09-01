@@ -4,6 +4,7 @@ export type ActivitySeanceType = {
   isSoldOut: boolean;
   url: string;
   location: SeanceLocationType;
+  id:string;
 };
 
 export type ActivityTicketType = {
@@ -14,5 +15,6 @@ export type ActivityTicketType = {
 export type SeanceLocationType = {
   address: string;
   name: string;
+  nameSlug:string;
 };
 

@@ -11,7 +11,7 @@ import { useToaster } from "../context/ToasterProvider";
 
 const RegisterPage: FC = () => {
   const navigate = useNavigate();
-  const { setInfoWithMessage,setDangerWithMessage } = useToaster();
+  const { setInfoWithMessage, setDangerWithMessage } = useToaster();
 
   const registerUser = (values: RegisterUserType) => {
     //TODO : addUserToUserCollection fonksiyonu hata verirse authentication uzerinde kaydedilen kullanicinin silinmesi gerekiyor.
@@ -20,17 +20,15 @@ const RegisterPage: FC = () => {
         addUserToUserCollection(fetchRegisterResult.user.uid, {
           firstName: values.firstName,
           lastName: values.lastName.toUpperCase(),
-          photoUrl : "",
-          email : values.email
+          photoUrl: "",
+          email: values.email,
         })
           .then(() => {
             setInfoWithMessage("Başarıyla kayıt oldunuz");
             navigate("/giris-yap");
           })
           .catch((error) => {
-
-            const key = error.code as keyof typeof firebaseErrors;
-            setDangerWithMessage(firebaseErrors[key]);
+            setDangerWithMessage(error);
           });
       })
       .catch((error) => {

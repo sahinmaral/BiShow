@@ -155,8 +155,7 @@ const TheatreDetail: FC = () => {
           <div className="container mx-auto flex flex-col gap-5">
             <TheatreDetailTabs description={activityDetail.description} />
             <TheatreTicketsSection
-              tickets={activityDetail.tickets}
-              activityName={activityDetail.name}
+              activity={activityDetail}
             />
             <SameGenreTheatreRecommendations genreName={activityDetail.genre} />
           </div>

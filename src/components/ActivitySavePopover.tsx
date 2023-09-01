@@ -2,10 +2,12 @@ import { FC } from "react";
 
 type ActivitySavePopoverProps = {
   clearFocusedSeanceUrl: () => void;
+  saveFocusedSeanceUrl: () => void;
 };
 
 const ActivitySavePopover: FC<ActivitySavePopoverProps> = ({
   clearFocusedSeanceUrl,
+  saveFocusedSeanceUrl,
 }) => {
   return (
     <div className="absolute right-[110%] -top-10 z-10 inline-block w-64 text-sm text-gray-500  bg-white border border-gray-200 rounded-lg shadow-sm dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
@@ -20,6 +22,7 @@ const ActivitySavePopover: FC<ActivitySavePopoverProps> = ({
           <button
             type="button"
             className="text-green-700 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 text-center mr-2 mb-2 dark:border-green-500 dark:text-green-500 dark:hover:text-white dark:hover:bg-green-600 dark:focus:ring-green-800"
+            onClick={() => saveFocusedSeanceUrl()}
           >
             Evet
           </button>

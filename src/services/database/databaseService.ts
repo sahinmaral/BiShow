@@ -46,6 +46,8 @@ import Activity from "../../types/Activity";
 import ActivityQueryResult from "../../types/ActivityQueryResult";
 import { mapActivityFromDocumentData } from "../../helpers/firebaseHelper";
 import UserDataAfterRegisterUser from "../../types/UserDataAfterRegisterUser";
+import BoughtTicketType from "../../types/BoughtTicketType";
+import { v4 as uuidv4 } from "uuid";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_APIKEY,
@@ -131,11 +133,24 @@ const getUserById = async (userId: string) => {
   return getDoc(doc(db, "users", userId));
 };
 
+const saveBoughtedTicketOfUser = async (boughtTicket: BoughtTicketType) => {
+  return setDoc(doc(db, "boughtTickets", uuidv4()), boughtTicket);
+};
+
+const getBoughtedTicketOfUser = async (userId: string, activityId: string) => {
+  const ref = collection(db, "boughtTickets");
+  const boughtTicketsQuery = query(ref, where("userId", "==", userId),where("activityId", "==", activityId));
+
+  return getDocs(boughtTicketsQuery);
+};
+
 export {
   getActivities,
   loadMoreActivities,
   getActivityById,
   getUserById,
+  saveBoughtedTicketOfUser,
   getActivitiesByGenreName,
+  getBoughtedTicketOfUser,
   addUserToUserCollection,
 };
