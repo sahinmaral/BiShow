@@ -61,9 +61,9 @@ const Home: FC = () => {
   return (
     <Fragment>
       <SlickList mainTitle="Tiyatro" mainRedirectUrl="/tiyatro" data={tiyatro} />
-      <SlickList mainTitle="Film" mainRedirectUrl="/film" data={tiyatro} />
+      {/* <SlickList mainTitle="Film" mainRedirectUrl="/film" data={tiyatro} />
       <SlickList mainTitle="Müzik" mainRedirectUrl="/muzik" data={tiyatro} />
-      <SlickList mainTitle="Spor" mainRedirectUrl="/spor" data={tiyatro} />
+      <SlickList mainTitle="Spor" mainRedirectUrl="/spor" data={tiyatro} /> */}
     </Fragment>
   );
 };

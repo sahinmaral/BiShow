@@ -38,12 +38,14 @@ import {
   limit,
   orderBy,
   query,
+  setDoc,
   startAfter,
   where,
 } from "firebase/firestore";
 import Activity from "../../types/Activity";
 import ActivityQueryResult from "../../types/ActivityQueryResult";
 import { mapActivityFromDocumentData } from "../../helpers/firebaseHelper";
+import UserDataAfterRegisterUser from "../../types/UserDataAfterRegisterUser";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_APIKEY,
@@ -118,4 +120,22 @@ const getActivityById = async (id: string) => {
   return docSnap;
 };
 
-export { getActivities, loadMoreActivities, getActivityById,getActivitiesByGenreName };
+const addUserToUserCollection = async (
+  userId: string,
+  user: UserDataAfterRegisterUser
+) => {
+  return setDoc(doc(db, "users", userId), user);
+};
+
+const getUserById = async (userId: string) => {
+  return getDoc(doc(db, "users", userId));
+};
+
+export {
+  getActivities,
+  loadMoreActivities,
+  getActivityById,
+  getUserById,
+  getActivitiesByGenreName,
+  addUserToUserCollection,
+};

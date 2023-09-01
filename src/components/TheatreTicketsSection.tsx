@@ -1,9 +1,9 @@
-import { FC, Fragment } from "react";
+import { FC, Fragment, useState } from "react";
 import { ActivityTicketType } from "../types/ActivitiyTicketType";
 import { v4 as uuidv4 } from "uuid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
-
+import ActivitySavePopover from "./ActivitySavePopover";
 
 type TheatreTicketsSectionProps = {
   tickets: ActivityTicketType[];
@@ -14,6 +14,16 @@ const TheatreTicketsSection: FC<TheatreTicketsSectionProps> = ({
   tickets,
   activityName,
 }) => {
+  const [focusedSeanceUrl, setFocusedSeanceUrl] = useState<string>("");
+
+  const clearFocusedSeanceUrl = (): void => {
+    setFocusedSeanceUrl("");
+  };
+
+  const saveFocusedSeanceUrl = () => {
+    //TODO : Firebase kullanici uzerinde kaydedilecek.
+  };
+
   return (
     <Fragment>
       <h1 className="text-2xl font-semibold">
@@ -25,7 +35,8 @@ const TheatreTicketsSection: FC<TheatreTicketsSectionProps> = ({
           <div className="rounded-lg w-full shadow-lg p-4" key={uuidv4()}>
             <h2 className="text-2xl font-semibold">{ticket.city}</h2>
             <h4 className="uppercase font-normal">
-              {activityName} {ticket.city} Biletleri
+              <FontAwesomeIcon icon={faLocationDot} /> {activityName}{" "}
+              {ticket.city} Biletleri
             </h4>
             {ticket.seances.map((seance) => {
               return (
@@ -79,13 +90,29 @@ const TheatreTicketsSection: FC<TheatreTicketsSectionProps> = ({
                   </div>
 
                   <div className="flex items-end">
-                    <a
-                      href={seance.url}
-                      target={"_blank"}
-                      className="max-md:w-full text-center uppercase hover:cursor-pointer focus:outline-none text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-10 py-3 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-600"
-                    >
-                      Biletini Al
-                    </a>
+                    {!seance.isSoldOut ? (
+                      <div className="relative">
+                        <a
+                          onClick={() => {
+                            setFocusedSeanceUrl(seance.url);
+                          }}
+                          href={seance.url}
+                          target={"_blank"}
+                          className={`max-md:w-full text-center uppercase hover:cursor-pointer focus:outline-none text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-10 py-3 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-600`}
+                        >
+                          Biletini Al
+                        </a>
+                        {focusedSeanceUrl === seance.url && (
+                          <ActivitySavePopover clearFocusedSeanceUrl={clearFocusedSeanceUrl} />
+                        )}
+                      </div>
+                    ) : (
+                      <button
+                        className={`bg-opacity-30 max-md:w-full text-center hover:cursor-default uppercase focus:outline-none text-white bg-green-600  font-medium rounded-lg text-sm px-10 py-3 mr-2 mb-2`}
+                      >
+                        Biletini Al
+                      </button>
+                    )}
                   </div>
                 </div>
               );
