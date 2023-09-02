@@ -12,11 +12,11 @@ const initialState: AppStateType = {
   modalContent: {
     title: "",
     isOpened: false,
-    datas: [],
+    data: "",
     modalType: null,
   },
   fetchResultAtPage: {
-    isLoading: false,
+    isLoading: true,
     errorMessage: "",
   },
 };

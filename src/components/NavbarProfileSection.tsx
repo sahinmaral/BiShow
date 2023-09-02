@@ -12,11 +12,9 @@ const NavbarProfileSection: FC = () => {
 
   const { setSuccessWithMessage } = useToaster();
   const { user } = useSelector(getAuthState);
-  const dispatch = useDispatch();
 
   const logOut = () => {
     logOutUser().then(() => {
-      dispatch(clearUserState());
       setSuccessWithMessage("Görüşmek üzere");
       setIsOpened(false);
     });

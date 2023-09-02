@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import ActivitySavePopover from "./ActivitySavePopover";
 import {
-  getBoughtedTicketOfUser,
+  getBoughtedTicketOfUserByActivityId,
   saveBoughtedTicketOfUser,
 } from "../services/database/databaseService";
 import { useSelector } from "react-redux";
@@ -33,7 +33,7 @@ const TheatreTicketsSection: FC<TheatreTicketsSectionProps> = ({
 
   useEffect(() => {
     if (user !== null) {
-      getBoughtedTicketOfUser(user.id, activity.id).then((result) => {
+      getBoughtedTicketOfUserByActivityId(user.id, activity.id).then((result) => {
         result.docs.forEach((doc) => {
           setBoughtedTickets([
             ...boughtedTickets,
@@ -68,6 +68,7 @@ const TheatreTicketsSection: FC<TheatreTicketsSectionProps> = ({
         seanceId: seanceId,
       }).then(() => {
         setSuccessWithMessage("Seansınızı başarılı bir şekilde kaydettiniz");
+        clearFocusedSeanceUrl();
       });
     }
   };

@@ -6,6 +6,12 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
+import { store } from "../../redux/store";
+import { setIsLoadingOfFetchResult } from "../../redux/app/appSlice";
+import { collection, query } from "firebase/firestore";
+import { clearUserState, setUser } from "../../redux/auth/authSlice";
+import { getUserById } from "../database/databaseService";
+import User from "../../types/User";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_APIKEY,
@@ -29,26 +35,54 @@ const fetchLoginUser = (email: string, password: string) => {
   return signInWithEmailAndPassword(auth, email, password);
 };
 
-const getLoggedUserIdIfAuthorized = async () => {
-  return new Promise((resolve) => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // User is signed in, resolve with the UID
-        const uid = user.uid;
-        resolve(uid);
-      } else {
-        // User is signed out, reject with an error or appropriate message
-        //reject(new Error('User is signed out.'));
-      }
+export const checkUser = () => {
+  onAuthStateChanged(auth, (userAuth) => {
+    if (userAuth) {
+      store.dispatch(setIsLoadingOfFetchResult(true));
+      setCurrentUser();
+    } else {
+      store.dispatch(setIsLoadingOfFetchResult(true));
+      logOutUser();
+    }
+  });
+};
 
-      // Unsubscribe from the listener to prevent memory leaks
-      unsubscribe();
-    });
+export const setCurrentUser = () => {
+  return new Promise<void>((resolve, reject) => {
+    const currentUser = auth.currentUser;
+    if (currentUser !== null) {
+      getUserById(currentUser.uid as string)
+        .then((result) => {
+          if (!result.data) {
+            reject("Document does not exist");
+          }
+
+          const userDetailed = result.data() as User;
+
+          store.dispatch(
+            setUser({
+              id: currentUser.uid as string,
+              firstName: userDetailed.firstName,
+              lastName: userDetailed.lastName,
+              email: userDetailed.email,
+              photoUrl: userDetailed.photoUrl,
+            })
+          );
+
+          resolve();
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    }
   });
 };
 
 const logOutUser = () => {
-  return signOut(auth);
+  return signOut(auth).then(() => {
+    store.dispatch(clearUserState());
+    store.dispatch(setIsLoadingOfFetchResult(false));
+  });
 };
 
-export { fetchRegisterUser, fetchLoginUser, getLoggedUserIdIfAuthorized,logOutUser };
+export { fetchRegisterUser, fetchLoginUser, logOutUser };

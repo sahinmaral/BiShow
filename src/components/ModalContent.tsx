@@ -3,6 +3,7 @@ import ModalContentTypeEnum from "../enums/ModalContentTypeEnum";
 import FilterActivityModalContent from "./FilterActivityModalContent";
 import { getAppState, setActivityFilter } from "../redux/app/appSlice";
 import { useDispatch, useSelector } from "react-redux";
+import VerifyDeleteSavedTicketModalContent from "./VerifyDeleteSavedTicketModalContent";
 
 const ModalContent: FC = () => {
   const { modalContent, activityFilter } = useSelector(getAppState);
@@ -14,14 +15,13 @@ const ModalContent: FC = () => {
       ["Mekan", "location"],
       ["Tür", "genre"],
       ["Tarih", "startingDate"],
-    ])
+    ]);
     const keyOfActivityFilter = mapOfActivityFilter.get(modalContent.title)!;
 
     dispatch(
       setActivityFilter({ ...activityFilter, [keyOfActivityFilter]: value })
     );
   };
-
 
   const renderComponent = useMemo(() => {
     switch (modalContent.modalType) {
@@ -32,10 +32,14 @@ const ModalContent: FC = () => {
             updateActivityFilter={updateActivityFilter}
           />
         );
+      case ModalContentTypeEnum.VerifyDeleteSavedTicket:
+        return (
+          <VerifyDeleteSavedTicketModalContent modalContent={modalContent} />
+        );
       default:
         return <Fragment />;
     }
-  }, [modalContent.modalType, modalContent.datas]);
+  }, [modalContent.modalType, modalContent.data]);
 
   return <Fragment>{renderComponent}</Fragment>;
 };

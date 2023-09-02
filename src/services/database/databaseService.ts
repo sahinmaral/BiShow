@@ -1,36 +1,10 @@
-// import { initializeApp } from "firebase/app";
-// import { child, get, getDatabase, ref } from "firebase/database";
-
-// const firebaseConfig = {
-//   apiKey: import.meta.env.VITE_FIREBASE_APIKEY,
-//   authDomain: import.meta.env.VITE_FIREBASE_AUTHDOMAIN,
-//   projectId: import.meta.env.VITE_FIREBASE_PROJECTID,
-//   storageBucket: import.meta.env.VITE_FIREBASE_STORAGEBUCKET,
-//   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGINGSENDERID,
-//   appId: import.meta.env.VITE_FIREBASE_APPID,
-//   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENTID,
-//   databaseURL: import.meta.env.VITE_FIREBASE_DATABASEURL,
-// };
-
-// // Initialize Firebase
-// const app = initializeApp(firebaseConfig);
-
-// // Initialize Realtime Database and get a reference to the service
-// const database = getDatabase(app);
-
-// const getActivities = () => {
-//   const dbRef = ref(database);
-//   return get(child(dbRef, `activities`))
-// };
-
-// export {getActivities}
-
 import { initializeApp } from "firebase/app";
 import {
   DocumentData,
   Query,
   QueryDocumentSnapshot,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -44,10 +18,14 @@ import {
 } from "firebase/firestore";
 import Activity from "../../types/Activity";
 import ActivityQueryResult from "../../types/ActivityQueryResult";
-import { mapActivityFromDocumentData } from "../../helpers/firebaseHelper";
+import {
+  mapActivityFromDocumentData,
+  mapBoughtTicketFromDocumentData,
+} from "../../helpers/firebaseHelper";
 import UserDataAfterRegisterUser from "../../types/UserDataAfterRegisterUser";
 import BoughtTicketType from "../../types/BoughtTicketType";
 import { v4 as uuidv4 } from "uuid";
+import BoughtTicketDetailType from "../../types/BoughtTicketDetailType";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_APIKEY,
@@ -137,11 +115,73 @@ const saveBoughtedTicketOfUser = async (boughtTicket: BoughtTicketType) => {
   return setDoc(doc(db, "boughtTickets", uuidv4()), boughtTicket);
 };
 
-const getBoughtedTicketOfUser = async (userId: string, activityId: string) => {
+const getBoughtedTicketOfUserByActivityId = async (
+  userId: string,
+  activityId: string
+) => {
   const ref = collection(db, "boughtTickets");
-  const boughtTicketsQuery = query(ref, where("userId", "==", userId),where("activityId", "==", activityId));
+  const boughtTicketsQuery = query(
+    ref,
+    where("userId", "==", userId),
+    where("activityId", "==", activityId)
+  );
 
   return getDocs(boughtTicketsQuery);
+};
+
+const deleteSavedTicket = async (ticket: BoughtTicketType) => {
+  const boughtTicketsQuery = query(
+    collection(db, "boughtTickets"),
+    where("userId", "==", ticket.userId),
+    where("activityId", "==", ticket.activityId),
+    where("seanceId", "==", ticket.seanceId)
+  );
+
+  return getDocs(boughtTicketsQuery).then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+      deleteDoc(doc.ref);
+    });
+  });
+};
+
+const getDetailBoughtedTicketOfUser = async (
+  userId: string
+): Promise<Promise<BoughtTicketDetailType>[]> => {
+  try {
+    const ref = collection(db, "boughtTickets");
+    const boughtTicketsQuery = query(ref, where("userId", "==", userId));
+
+    const allBoughtTicketDocs = await getDocs(boughtTicketsQuery);
+
+    return allBoughtTicketDocs.docs.map((ticketDoc) => {
+      const ticketData = mapBoughtTicketFromDocumentData(ticketDoc.data());
+
+      const activityDetailQuery = query(
+        activityRef,
+        where("id", "==", ticketData.activityId)
+      );
+
+      return (async () => {
+        const activityDetailDocs = await getDocs(activityDetailQuery);
+
+        const activity = mapActivityFromDocumentData(
+          activityDetailDocs.docs[0].data()
+        );
+
+        const searchedSeance = activity.tickets
+          .map((ticket) => ticket.seances)
+          .reduce((result, arr) => result.concat(arr), [])
+          .find((seance) => seance.id === ticketData.seanceId)!;
+
+        return {
+          activity: activity,
+          seance: searchedSeance,
+        };
+      })();
+    });
+  } catch (error) {
+    throw error;
+  }
 };
 
 export {
@@ -149,8 +189,10 @@ export {
   loadMoreActivities,
   getActivityById,
   getUserById,
+  deleteSavedTicket,
+  getDetailBoughtedTicketOfUser,
   saveBoughtedTicketOfUser,
   getActivitiesByGenreName,
-  getBoughtedTicketOfUser,
+  getBoughtedTicketOfUserByActivityId,
   addUserToUserCollection,
 };
