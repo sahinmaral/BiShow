@@ -1,4 +1,5 @@
 import { ActivityTicketType } from "./ActivitiyTicketType";
+import ActivityRatingType from "./ActivityRatingType";
 
 type Activity = {
     id:string;
@@ -10,6 +11,7 @@ type Activity = {
     description:string;
     startingDate: Date;
     endDate:Date;
+    rating:ActivityRatingType[];
     tickets: ActivityTicketType[]
 }
 

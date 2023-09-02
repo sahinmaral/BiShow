@@ -1,4 +1,4 @@
-import { FC, MouseEvent,ChangeEvent } from "react";
+import { FC, MouseEvent, ChangeEvent, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 import ModalContent from "../types/ModalContentType";
@@ -8,12 +8,12 @@ import { v4 as uuidv4 } from "uuid";
 
 type FilterActivityModalContentProps = {
   modalContent: ModalContent;
-  updateActivityFilter : (value: string) => void
+  updateActivityFilter: (value: string) => void;
 };
 
 const FilterActivityModalContent: FC<FilterActivityModalContentProps> = ({
   modalContent,
-  updateActivityFilter
+  updateActivityFilter,
 }) => {
   const dispatch = useDispatch();
 
@@ -25,11 +25,14 @@ const FilterActivityModalContent: FC<FilterActivityModalContentProps> = ({
     targetElement.style.overflow = "auto";
   };
 
-  const handleSelectOption = (event:ChangeEvent<HTMLInputElement>) => {
-    const targetElement = event.target as HTMLInputElement
+  const handleSelectOption = (event: ChangeEvent<HTMLInputElement>) => {
+    const targetElement = event.target as HTMLInputElement;
     updateActivityFilter(targetElement.value);
-  }
+  };
 
+  const filterActivityData = useMemo(() => {
+    return JSON.parse(modalContent.data) as string[];
+  }, []);
 
   return (
     <div className="relative bg-white rounded-lg shadow dark:bg-gray-700 w-[400px] h-[500px] overflow-y-scroll">
@@ -48,7 +51,7 @@ const FilterActivityModalContent: FC<FilterActivityModalContentProps> = ({
       </div>
 
       <div className="p-6 space-y-6">
-        {modalContent.datas.map((item) => {
+        {filterActivityData.map((item) => {
           return (
             <div className="flex items-center mb-4" key={uuidv4()}>
               <input

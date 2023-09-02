@@ -80,6 +80,7 @@ const TheatreDetail: FC = () => {
       });
   }, [id]);
 
+
   return (
     <Fragment>
       {fetchResultAtPage.isLoading && <Loading />}
@@ -153,10 +154,11 @@ const TheatreDetail: FC = () => {
             />
           </div>
           <div className="container mx-auto flex flex-col gap-5">
-            <TheatreDetailTabs description={activityDetail.description} />
-            <TheatreTicketsSection
-              activity={activityDetail}
+            <TheatreDetailTabs
+              activityDetail={activityDetail}
+              setActivityDetail={setActivityDetail}
             />
+            <TheatreTicketsSection activity={activityDetail} />
             <SameGenreTheatreRecommendations genreName={activityDetail.genre} />
           </div>
         </Fragment>

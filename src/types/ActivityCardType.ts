@@ -1,7 +1,7 @@
-type TheatreCardType = {
+type ActivityCardType = {
   title: string;
   imageUrl: string;
   redirectUrl : string;
 };
 
-export default TheatreCardType;
+export default ActivityCardType;

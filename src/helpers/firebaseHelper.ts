@@ -5,6 +5,7 @@ import BoughtTicketType from "../types/BoughtTicketType";
 const mapActivityFromDocumentData = (docObject: DocumentData) : Activity => {
   return {
     id: docObject.id,
+    rating:docObject.rating,
     name: docObject.name,
     genre: docObject.genre,
     activityType: docObject.activityType,

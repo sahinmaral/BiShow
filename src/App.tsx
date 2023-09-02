@@ -9,23 +9,20 @@ import ModalOverlay from "./components/ModalOverlay";
 import TheatreDetail from "./pages/TheatreDetail";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-import {  useSelector } from "react-redux";
-import {  getAuthState } from "./redux/auth/authSlice";
+import { useSelector } from "react-redux";
+import { getAuthState } from "./redux/auth/authSlice";
 import BoughTicketsShowroom from "./pages/BoughtTicketsShowroom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { getAppState } from "./redux/app/appSlice";
 import { checkUser } from "./services/auth/authService";
 
-
 const App: FC = () => {
-
-  const {user} = useSelector(getAuthState);
-  const {fetchResultAtPage} = useSelector(getAppState);
+  const { user } = useSelector(getAuthState);
+  const { fetchResultAtPage } = useSelector(getAppState);
 
   useEffect(() => {
-    checkUser()
+    checkUser();
   }, []);
-
 
   return (
     <Fragment>
@@ -41,9 +38,13 @@ const App: FC = () => {
             <Route
               path="/satin-aldigim-biletler"
               element={
-              <ProtectedRoute user={user} isLoading={fetchResultAtPage.isLoading}>
-                <BoughTicketsShowroom />
-              </ProtectedRoute>}
+                <ProtectedRoute
+                  user={user}
+                  isLoading={fetchResultAtPage.isLoading}
+                >
+                  <BoughTicketsShowroom />
+                </ProtectedRoute>
+              }
             />
             <Route path="*" element={<NoPage />} />
           </Routes>

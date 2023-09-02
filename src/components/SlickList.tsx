@@ -68,7 +68,7 @@ const SlickList: FC<SlickListProps> = ({ mainTitle, mainRedirectUrl,data }) => {
                   <img
                     src={item.imageUrl}
                     key={uuidv4()}
-                    className="max-sm:w-full h-[150px] object-cover rounded-lg block"
+                    className="max-sm:w-full h-[280px] object-cover rounded-lg block"
                   />
                   <p className="font-semibold mt-3 text-gray-800 group-hover:text-cornflower-blue-700">{item.title}</p>
                 </div>

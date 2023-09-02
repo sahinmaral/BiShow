@@ -14,6 +14,7 @@ import {
   query,
   setDoc,
   startAfter,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import Activity from "../../types/Activity";
@@ -26,6 +27,8 @@ import UserDataAfterRegisterUser from "../../types/UserDataAfterRegisterUser";
 import BoughtTicketType from "../../types/BoughtTicketType";
 import { v4 as uuidv4 } from "uuid";
 import BoughtTicketDetailType from "../../types/BoughtTicketDetailType";
+import HomepageSlickListDatas from "../../types/HomeSlickListDatas";
+import ActivityRatingType from "../../types/ActivityRatingType";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_APIKEY,
@@ -184,15 +187,70 @@ const getDetailBoughtedTicketOfUser = async (
   }
 };
 
+const getPopularActivities = async () => {
+  //TODO: Baska aktivite turleri gelince refactor edilecek
+  const theatreQuery = query(
+    activityRef,
+    where("activityType", "==", "Tiyatro"),
+    orderBy("rating", "desc"),
+    limit(10)
+  );
+
+  let homepageSlickListDatas: HomepageSlickListDatas = {
+    theatres: [],
+  };
+
+  return Promise.all([
+    getActivityDocsByQuery(theatreQuery).then((result) => {
+      homepageSlickListDatas.theatres = result.activities.map((activity) => {
+        return {
+          title: activity.name,
+          redirectUrl: `/tiyatro/${activity.id}`,
+          imageUrl: activity.thumbnail,
+        };
+      });
+    }),
+  ]).then(() => {
+    return homepageSlickListDatas;
+  });
+};
+
+const updateRatingOfActivity = async (
+  activityId: string,
+  rating: ActivityRatingType[]
+) => {
+  const activityQuery = query(
+    collection(db, "activities"),
+    where("id", "==", activityId)
+  );
+
+  return new Promise<void>((resolve, reject) => {
+    return getDocs(activityQuery)
+      .then((querySnapshot) => {
+        return updateDoc(querySnapshot.docs[0].ref, {
+          rating: rating,
+        })
+          .then(() => {
+            resolve();
+          })
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+};
+
 export {
   getActivities,
   loadMoreActivities,
   getActivityById,
   getUserById,
   deleteSavedTicket,
+  getPopularActivities,
   getDetailBoughtedTicketOfUser,
   saveBoughtedTicketOfUser,
   getActivitiesByGenreName,
+  updateRatingOfActivity,
   getBoughtedTicketOfUserByActivityId,
   addUserToUserCollection,
 };
