@@ -229,10 +229,26 @@ const updateRatingOfActivity = async (
       .then((querySnapshot) => {
         return updateDoc(querySnapshot.docs[0].ref, {
           rating: rating,
-        })
-          .then(() => {
-            resolve();
-          })
+        }).then(() => {
+          resolve();
+        });
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+};
+
+const updateThemeSettingOfUser = async (userId: string, theme: string) => {
+  const docRef = doc(db, "users", userId);
+  return new Promise<void>((resolve, reject) => {
+    return getDoc(docRef)
+      .then((querySnapshot) => {
+        return updateDoc(querySnapshot.ref, {
+          theme: theme,
+        }).then(() => {
+          resolve();
+        });
       })
       .catch((error) => {
         reject(error);
@@ -251,6 +267,7 @@ export {
   saveBoughtedTicketOfUser,
   getActivitiesByGenreName,
   updateRatingOfActivity,
+  updateThemeSettingOfUser,
   getBoughtedTicketOfUserByActivityId,
   addUserToUserCollection,
 };

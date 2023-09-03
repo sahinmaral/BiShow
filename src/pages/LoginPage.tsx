@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { getUserById } from "../services/database/databaseService";
 import { setUser } from "../redux/auth/authSlice";
-import User from "../types/User";
+import { mapUserDetailFromDocumentData } from "../helpers/firebaseHelper";
 
 const LoginPage: FC = () => {
   const { setSuccessWithMessage, setDangerWithMessage } = useToaster();
@@ -25,18 +25,15 @@ const LoginPage: FC = () => {
       })
       .then((id) => {
         getUserById(id).then((doc) => {
-          const data = doc.data() as User;
-          dispatch(
-            setUser({
-              id: id,
-              firstName: data.firstName,
-              lastName: data.lastName,
-              email: data.email,
-              photoUrl: data.photoUrl,
-            })
-          );
-          setSuccessWithMessage("Hoşgeldiniz");
-          navigate("/");
+          const userData = doc.data()
+
+          if(userData){
+            const userDetailed = mapUserDetailFromDocumentData(userData, doc.id);
+            dispatch(setUser(userDetailed));
+            setSuccessWithMessage("Hoşgeldiniz");
+            navigate("/");
+          }
+
         });
       })
       .catch((error) => {

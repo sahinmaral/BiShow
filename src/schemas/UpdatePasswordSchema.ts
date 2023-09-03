@@ -6,11 +6,9 @@ import { object, ref, string } from "yup";
 const passwordRegex =
   /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-.]).{6,16}$/;
 
-let RegisterUserSchema = object({
-  email: string()
-    .email("Geçerli bir email giriniz")
-    .required("Email adresi giriniz"),
-  password: string()
+let UpdatePasswordSchema = object({
+  currentPassword: string().required("Mevcut şifrenizi giriniz"),
+  newPassword: string()
     .required("Şifre giriniz")
     .min(6, "Şifreniz minimum 6 karakter olmalıdır")
     .max(16, "Şifreniz maximum 16 karakter olmalıdır")
@@ -18,9 +16,9 @@ let RegisterUserSchema = object({
       passwordRegex,
       "Şifreniz en az bir büyük , küçük , özel karakter içermelidir"
     ),
-  passwordConfirm: string()
+  newPasswordConfirm: string()
     .required("Şifre tekrarını giriniz")
-    .oneOf([ref("password")], "Şifreniz uyuşmuyor"),
+    .oneOf([ref("newPassword")], "Şifreniz uyuşmuyor"),
 });
 
-export default RegisterUserSchema;
+export default UpdatePasswordSchema;

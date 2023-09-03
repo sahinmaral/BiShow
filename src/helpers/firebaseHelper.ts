@@ -1,11 +1,12 @@
 import { DocumentData } from "firebase/firestore";
 import Activity from "../types/Activity";
 import BoughtTicketType from "../types/BoughtTicketType";
+import User from "../types/User";
 
-const mapActivityFromDocumentData = (docObject: DocumentData) : Activity => {
+const mapActivityFromDocumentData = (docObject: DocumentData): Activity => {
   return {
     id: docObject.id,
-    rating:docObject.rating,
+    rating: docObject.rating,
     name: docObject.name,
     genre: docObject.genre,
     activityType: docObject.activityType,
@@ -18,7 +19,23 @@ const mapActivityFromDocumentData = (docObject: DocumentData) : Activity => {
   };
 };
 
-const mapBoughtTicketFromDocumentData = (docObject: DocumentData) : BoughtTicketType => {
+const mapUserDetailFromDocumentData = (
+  docObject: DocumentData,
+  id: string
+): User => {
+  return {
+    id: id,
+    firstName: docObject.firstName,
+    lastName: docObject.lastName,
+    email: docObject.email,
+    photoUrl: docObject.photoUrl,
+    theme: docObject.theme,
+  };
+};
+
+const mapBoughtTicketFromDocumentData = (
+  docObject: DocumentData
+): BoughtTicketType => {
   return {
     userId: docObject.userId,
     activityId: docObject.activityId,
@@ -26,4 +43,8 @@ const mapBoughtTicketFromDocumentData = (docObject: DocumentData) : BoughtTicket
   };
 };
 
-export { mapActivityFromDocumentData,mapBoughtTicketFromDocumentData };
+export {
+  mapActivityFromDocumentData,
+  mapUserDetailFromDocumentData,
+  mapBoughtTicketFromDocumentData,
+};

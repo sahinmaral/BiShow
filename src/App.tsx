@@ -15,6 +15,8 @@ import BoughTicketsShowroom from "./pages/BoughtTicketsShowroom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { getAppState } from "./redux/app/appSlice";
 import { checkUser } from "./services/auth/authService";
+import SettingsPage from "./pages/SettingsPage";
+import { loadTheme } from "./helpers/themeHelper";
 
 const App: FC = () => {
   const { user } = useSelector(getAuthState);
@@ -23,6 +25,13 @@ const App: FC = () => {
   useEffect(() => {
     checkUser();
   }, []);
+
+  useEffect(() => {
+    const theme =
+      user !== null && user.theme !== undefined ? user.theme : "light";
+
+    loadTheme(theme);
+  }, [user]);
 
   return (
     <Fragment>
@@ -43,6 +52,17 @@ const App: FC = () => {
                   isLoading={fetchResultAtPage.isLoading}
                 >
                   <BoughTicketsShowroom />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/ayarlar"
+              element={
+                <ProtectedRoute
+                  user={user}
+                  isLoading={fetchResultAtPage.isLoading}
+                >
+                  <SettingsPage />
                 </ProtectedRoute>
               }
             />

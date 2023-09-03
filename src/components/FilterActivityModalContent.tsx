@@ -32,7 +32,7 @@ const FilterActivityModalContent: FC<FilterActivityModalContentProps> = ({
 
   const filterActivityData = useMemo(() => {
     return JSON.parse(modalContent.data) as string[];
-  }, []);
+  }, [modalContent.data]);
 
   return (
     <div className="relative bg-white rounded-lg shadow dark:bg-gray-700 w-[400px] h-[500px] overflow-y-scroll">

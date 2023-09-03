@@ -7,7 +7,7 @@ import {
   setActivityFilter,
   setModalContent,
 } from "../redux/app/appSlice";
-import ModalContent from "../types/ModalContentType";
+import ModalContentType from "../types/ModalContentType";
 import ModalContentTypeEnum from "../enums/ModalContentTypeEnum";
 
 const TheatreShowroomFilterSection: FC = () => {
@@ -77,7 +77,7 @@ const TheatreShowroomFilterSection: FC = () => {
       );
   }, [activities]);
 
-  const handleSetModalContent = (modalContent: ModalContent) => {
+  const handleSetModalContent = (modalContent: ModalContentType) => {
     dispatch(setModalContent(modalContent));
 
     const targetElement = document.querySelector("html, body") as HTMLElement;
@@ -141,7 +141,7 @@ const TheatreShowroomFilterSection: FC = () => {
                 title: "Şehir",
                 isOpened: true,
                 modalType: ModalContentTypeEnum.FilterActivity,
-                datas: getNonDuplicatedArray(mappedCountryOfActivities),
+                data: JSON.stringify(getNonDuplicatedArray(mappedCountryOfActivities)),
               })
             }
           >
@@ -173,7 +173,7 @@ const TheatreShowroomFilterSection: FC = () => {
                 title: "Mekan",
                 isOpened: true,
                 modalType: ModalContentTypeEnum.FilterActivity,
-                datas: getNonDuplicatedArray(mappedLocationOfActivities),
+                data: JSON.stringify(getNonDuplicatedArray(mappedLocationOfActivities)),
               })
             }
           >
@@ -205,7 +205,7 @@ const TheatreShowroomFilterSection: FC = () => {
                 title: "Tür",
                 isOpened: true,
                 modalType: ModalContentTypeEnum.FilterActivity,
-                datas: getNonDuplicatedArray(mappedGenreOfActivities),
+                data: JSON.stringify(getNonDuplicatedArray(mappedGenreOfActivities)),
               })
             }
           >
@@ -237,7 +237,7 @@ const TheatreShowroomFilterSection: FC = () => {
                 title: "Tarih",
                 isOpened: true,
                 modalType: ModalContentTypeEnum.FilterActivity,
-                datas: getNonDuplicatedArray(mappedDateOfActivities),
+                data: JSON.stringify(getNonDuplicatedArray(mappedDateOfActivities)),
               })
             }
           >

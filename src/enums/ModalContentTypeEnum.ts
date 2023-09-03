@@ -1,6 +1,9 @@
 enum ModalContentTypeEnum {
   FilterActivity = "filterActivity",
-  VerifyDeleteSavedTicket = "verifyDeleteSavedTicket"
+  VerifyDeleteSavedTicket = "verifyDeleteSavedTicket",
+  ThemeChange = "themeChange",
+  ChangePassword = "changePassword",
+  UpdateProfilePhoto = "updateProfilePhoto"
 }
 
 export default ModalContentTypeEnum;

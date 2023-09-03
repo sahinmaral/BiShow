@@ -1,7 +1,7 @@
-import { FC, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
-import { clearUserState, getAuthState } from "../redux/auth/authSlice";
+import { FC, useState } from "react";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { getAuthState } from "../redux/auth/authSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { logOutUser } from "../services/auth/authService";
@@ -72,7 +72,7 @@ const NavbarProfileSection: FC = () => {
             isOpened ? "z-10 opacity-100" : "-z-10 opacity-0"
           } transition-opacity duration-300 absolute right-0 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600`}
         >
-          <div className="px-4 py-3">
+          <div className="px-4 py-3 hover:cursor-default">
             <span className="block text-sm text-gray-900 dark:text-white">
               {user.firstName} {user.lastName}
             </span>
@@ -81,17 +81,20 @@ const NavbarProfileSection: FC = () => {
             </span>
           </div>
           <ul className="py-2" aria-labelledby="user-menu-button">
-            <li>
+            {/* <li>
               <Link
                 to={"/profil"}
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
               >
                 Profil
               </Link>
-            </li>
+            </li> */}
             <li>
               <Link
                 to={"/ayarlar"}
+                onClick={() => {
+                  setIsOpened(false);
+                }}
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
               >
                 Ayarlar

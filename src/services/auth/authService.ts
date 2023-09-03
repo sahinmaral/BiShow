@@ -1,17 +1,22 @@
 import { initializeApp } from "firebase/app";
 import {
+  EmailAuthProvider,
   createUserWithEmailAndPassword,
   getAuth,
   onAuthStateChanged,
+  reauthenticateWithCredential,
   signInWithEmailAndPassword,
   signOut,
+  updatePassword,
 } from "firebase/auth";
 import { store } from "../../redux/store";
-import { setIsLoadingOfFetchResult } from "../../redux/app/appSlice";
-import { collection, query } from "firebase/firestore";
+import {
+  setIsLoadingOfFetchResult,
+  setModalContent,
+} from "../../redux/app/appSlice";
 import { clearUserState, setUser } from "../../redux/auth/authSlice";
 import { getUserById } from "../database/databaseService";
-import User from "../../types/User";
+import { mapUserDetailFromDocumentData } from "../../helpers/firebaseHelper";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_APIKEY,
@@ -53,23 +58,20 @@ export const setCurrentUser = () => {
     if (currentUser !== null) {
       getUserById(currentUser.uid as string)
         .then((result) => {
-          if (!result.data) {
+          const userData = result.data();
+
+          if (!userData) {
             reject("Document does not exist");
+          } else {
+            const userDetailed = mapUserDetailFromDocumentData(
+              userData,
+              result.id
+            );
+
+            store.dispatch(setUser(userDetailed));
+
+            resolve();
           }
-
-          const userDetailed = result.data() as User;
-
-          store.dispatch(
-            setUser({
-              id: currentUser.uid as string,
-              firstName: userDetailed.firstName,
-              lastName: userDetailed.lastName,
-              email: userDetailed.email,
-              photoUrl: userDetailed.photoUrl,
-            })
-          );
-
-          resolve();
         })
         .catch((error) => {
           reject(error);
@@ -81,8 +83,53 @@ export const setCurrentUser = () => {
 const logOutUser = () => {
   return signOut(auth).then(() => {
     store.dispatch(clearUserState());
+    store.dispatch(
+      setModalContent({
+        title: "",
+        isOpened: false,
+        data: "",
+        modalType: null,
+      })
+    );
     store.dispatch(setIsLoadingOfFetchResult(false));
   });
 };
 
-export { fetchRegisterUser, fetchLoginUser, logOutUser };
+const checkAndUpdateUserPassword = (
+  currentPassword: string,
+  newPassword: string
+) => {
+  return new Promise<void>((resolve, reject) => {
+    const currentUser = auth.currentUser;
+
+    if (currentUser !== null) {
+      const credential = EmailAuthProvider.credential(
+        currentUser.email!,
+        currentPassword
+      );
+
+      reauthenticateWithCredential(currentUser, credential)
+        .then(() => {
+          updatePassword(currentUser, newPassword)
+            .then(() => {
+              resolve();
+            })
+            .catch((error) => {
+              reject(error);
+            });
+        })
+        .catch(() => {
+          reject("Mevcut şifreniz yanlış");
+        });
+    } else {
+      reject("Herhangi bir hesap yok");
+    }
+  });
+};
+
+export {
+  fetchRegisterUser,
+  fetchLoginUser,
+  logOutUser,
+  checkAndUpdateUserPassword,
+};

@@ -1,7 +1,6 @@
 import { FC, Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAuthState } from "../redux/auth/authSlice";
-import { useToaster } from "../context/ToasterProvider";
 import BoughtTicketDetailType from "../types/BoughtTicketDetailType";
 import { getDetailBoughtedTicketOfUser } from "../services/database/databaseService";
 import {
@@ -69,6 +68,7 @@ const BoughTicketsShowroom: FC = () => {
     }
   }, [user]);
 
+
   return (
     //TODO: Eger kullanici bilet silerse ya da bilet kaydederse bunun diger sayfalarda da anlik goruntulenmesi gerekir.
     <Fragment>
@@ -79,7 +79,7 @@ const BoughTicketsShowroom: FC = () => {
           message={fetchResultAtPage.errorMessage}
         />
       )}
-      {!fetchResultAtPage.isLoading && (
+      {!fetchResultAtPage.isLoading && !fetchResultAtPage.errorMessage && (
         <div className="container mx-auto flex flex-col">
           <h1 className="text-center text-2xl font-semibold my-10">
             Satın aldığım biletler
