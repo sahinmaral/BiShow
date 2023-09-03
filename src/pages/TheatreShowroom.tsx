@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import TheatreShowroomFilterSection from "../components/TheatreShowroomFilterSection";
 import { faCircle } from "@fortawesome/free-solid-svg-icons";
 
-import { v4 as uuidv4 } from "uuid";
 import {
   getActivities,
   loadMoreActivities,
@@ -18,9 +17,12 @@ import {
   setIsLoadingOfFetchResult,
 } from "../redux/app/appSlice";
 import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
-import Loading from "./Loading";
 import CustomAlert from "../components/CustomAlert";
 import AlertTypeEnum from "../enums/AlertTypeEnum";
+import TheatreShowroomGridSection from "../components/TheatreShowroomGridSection";
+import { Helmet } from "react-helmet-async";
+import constants from "../assets/constants";
+import TheatreShowroomLoadingGridSection from "../components/TheatreShowroomLoadingGridSection";
 
 const TheatreShowroom: FC = () => {
   const state = useSelector(getAppState);
@@ -101,87 +103,73 @@ const TheatreShowroom: FC = () => {
     dispatch(setIsLoadingOfFetchResult(true));
 
     getActivities()
-    .then((result) => {
-      setLastVisibleItem(result.lastVisibleItem);
-      dispatch(setActivities(result.activities));
-      dispatch(setActivityFilter({ type: "Tiyatro" }));
-    })
-    .catch((error) => {
-      dispatch(setErrorMessageOfFetchResult(error.message));
-    })
-    .finally(() => {
-      dispatch(setIsLoadingOfFetchResult(false));
-    })
+      .then((result) => {
+        setLastVisibleItem(result.lastVisibleItem);
+        dispatch(setActivities(result.activities));
+        dispatch(setActivityFilter({ type: "Tiyatro" }));
+      })
+      .catch((error) => {
+        dispatch(setErrorMessageOfFetchResult(error.message));
+      })
+      .finally(() => {
+        dispatch(setIsLoadingOfFetchResult(false));
+      });
   }, []);
 
   return (
     <Fragment>
-      {state.fetchResultAtPage.isLoading && <Loading />}
+      <Helmet>
+        <title>Tiyatrolar - {constants.APP_MAIN_TITLE}</title>
+      </Helmet>
       {state.fetchResultAtPage.errorMessage && (
         <CustomAlert
           alertType={AlertTypeEnum.Danger}
           message={state.fetchResultAtPage.errorMessage}
         />
       )}
-      {!state.fetchResultAtPage.isLoading && (
-        <div className="container mx-auto">
-          <div className="flex justify-between border-b border-gray-400 py-5">
-            <h1 className="text-4xl font-semibold">Tiyatro</h1>
+      <div className="container mx-auto">
+        {/* Breadcrumb */}
+        <div className="flex justify-between border-b border-gray-400 py-5">
+          <h1 className="text-4xl font-semibold dark:text-white">Tiyatro</h1>
 
-            <nav className="flex" aria-label="Breadcrumb">
-              <ol className="inline-flex items-center space-x-1 md:space-x-3">
-                <li className="inline-flex items-center">
-                  <Link
-                    to={"/"}
-                    className="inline-flex items-center text-base font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white"
-                  >
-                    Anasayfa
-                  </Link>
-                </li>
-                <li>
-                  <div className="flex items-center">
-                    <FontAwesomeIcon icon={faCircle} className="w-[5px]" />
-                    <Link
-                      to={"/tiyatro"}
-                      className="ml-1 text-base font-medium text-gray-700 hover:text-blue-600 md:ml-2 dark:text-gray-400 dark:hover:text-white"
-                    >
-                      Tiyatro
-                    </Link>
-                  </div>
-                </li>
-              </ol>
-            </nav>
-          </div>
-
-          <TheatreShowroomFilterSection />
-
-          <div className="grid md:grid-cols-4 grid-cols-2 mt-5 gap-5">
-            {filteredActivities.map((theatre) => {
-              return (
+          <nav className="flex">
+            <ol className="inline-flex items-center space-x-1 md:space-x-3">
+              <li className="inline-flex items-center">
                 <Link
-                  to={`/tiyatro/${theatre.id}`}
-                  key={uuidv4()}
-                  className="group"
+                  to={"/"}
+                  className="inline-flex items-center text-base font-medium text-gray-700  hover:text-blue-600 dark:text-white dark:hover:text-blue-600"
                 >
-                  <div className="max-w-sm bg-white rounded-lg dark:bg-gray-800">
-                    <img
-                      className="rounded-lg"
-                      src={theatre.thumbnail}
-                      alt=""
-                    />
-
-                    <div className="py-5">
-                      <h5 className="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-purple-heart-500 group-hover:drop-shadow-lg">
-                        {theatre.name}
-                      </h5>
-                    </div>
-                  </div>
+                  Anasayfa
                 </Link>
-              );
-            })}
-          </div>
+              </li>
+              <li>
+                <div className="flex items-center">
+                  <FontAwesomeIcon
+                    icon={faCircle}
+                    className="w-[5px] dark:text-white text-gray-700"
+                  />
+                  <Link
+                    to={"/tiyatro"}
+                    className="ml-1 text-base font-medium text-gray-700 hover:text-blue-600 md:ml-2 dark:text-white dark:hover:text-blue-600"
+                  >
+                    Tiyatro
+                  </Link>
+                </div>
+              </li>
+            </ol>
+          </nav>
         </div>
-      )}
+
+        <TheatreShowroomFilterSection
+          isLoading={state.fetchResultAtPage.isLoading}
+        />
+
+        {state.fetchResultAtPage.isLoading ? (
+          <TheatreShowroomLoadingGridSection />
+        ) : (
+          <TheatreShowroomGridSection filteredActivities={filteredActivities} />
+        )}
+      </div>
     </Fragment>
   );
 };

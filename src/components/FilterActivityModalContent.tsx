@@ -34,15 +34,17 @@ const FilterActivityModalContent: FC<FilterActivityModalContentProps> = ({
     return JSON.parse(modalContent.data) as string[];
   }, [modalContent.data]);
 
+  //TODO: Scroll , radio button larin oldugu div icerisinde yer almalidir.
+
   return (
     <div className="relative bg-white rounded-lg shadow dark:bg-gray-700 w-[400px] h-[500px] overflow-y-scroll">
-      <div className="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
-        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+      <div className="flex items-start justify-between p-7 border-b rounded-t dark:border-gray-600">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
           {modalContent.title}
-        </h3>
+        </h1>
         <button
           type="button"
-          className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+          className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-xl w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
           onClick={(event) => handleCloseModal(event)}
         >
           <FontAwesomeIcon icon={faClose} />
@@ -64,7 +66,7 @@ const FilterActivityModalContent: FC<FilterActivityModalContentProps> = ({
               />
               <label
                 htmlFor={`countries-${item}`}
-                className="block ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                className="block ml-2 text-base font-medium text-gray-900 dark:text-gray-300"
               >
                 {item}
               </label>

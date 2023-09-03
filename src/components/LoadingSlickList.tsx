@@ -2,20 +2,19 @@ import { FC } from "react";
 import Slider from "react-slick";
 import SlickListNextArrow from "./SlickListNextArrow";
 import SlickListPrevArrow from "./SlickListPrevArrow";
-import ISlickListData from "../interfaces/ISlickListData";
-import { v4 as uuidv4 } from "uuid";
 import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faImage } from "@fortawesome/free-solid-svg-icons";
+import { v4 as uuidv4 } from "uuid";
 
 type SlickListProps = {
   mainTitle: string;
   mainRedirectUrl: string;
-  data: ISlickListData[];
 };
 
-const SlickList: FC<SlickListProps> = ({
+const LoadingSlickList: FC<SlickListProps> = ({
   mainTitle,
   mainRedirectUrl,
-  data,
 }) => {
   const settings = {
     dots: false,
@@ -56,7 +55,7 @@ const SlickList: FC<SlickListProps> = ({
     <div className="w-full flex justify-center">
       <div className="xl:w-[1200px] lg:w-[1000px] md:w-[700px] sm:w-[500px] w-[300px]">
         <div className="flex justify-between sm:flex-row flex-col max-sm:gap-5 items-center m-3">
-          <h1 className="md:text-4xl text-xl font-bold dark:text-white">{mainTitle}</h1>
+          <h1 className="text-4xl font-bold dark:text-white">{mainTitle}</h1>
           <Link
             to={mainRedirectUrl}
             className="font-semibold text-lg text-gray-500 hover:text-gray-700 dark:hover:text-gray-400 dark:text-white"
@@ -65,19 +64,21 @@ const SlickList: FC<SlickListProps> = ({
           </Link>
         </div>
         <Slider {...settings}>
-          {data.map((item) => {
+          {Array.from(Array(10).keys()).map(() => {
             return (
-              <Link to={item.redirectUrl} className="group" key={uuidv4()}>
-                <div className="px-2">
-                  <img
-                    src={item.imageUrl}
-                    className="max-sm:w-full h-[280px] object-cover rounded-lg block"
+              <div className="group px-2" key={uuidv4()}>
+                <div className="rounded-lg bg-gray-300 dark:bg-gray-700 w-[210px] h-[280px] flex justify-center items-center animate-pulse">
+                  <FontAwesomeIcon
+                    icon={faImage}
+                    size="2xl"
+                    className="dark:text-gray-600"
                   />
-                  <p className="font-semibold mt-3 text-gray-800 dark:text-white text-center group-hover:text-cornflower-blue-700">
-                    {item.title}
-                  </p>
                 </div>
-              </Link>
+                <div className="mt-[2.5em] flex flex-col items-center">
+                  <div className="h-2.5 w-full bg-gray-200 rounded-full dark:bg-gray-700 mt-3"></div>
+                  <div className="h-2.5 w-3/4 bg-gray-200 rounded-full dark:bg-gray-700 mt-3"></div>
+                </div>
+              </div>
             );
           })}
         </Slider>
@@ -86,4 +87,4 @@ const SlickList: FC<SlickListProps> = ({
   );
 };
 
-export default SlickList;
+export default LoadingSlickList;

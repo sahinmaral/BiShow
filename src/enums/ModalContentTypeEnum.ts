@@ -3,7 +3,7 @@ enum ModalContentTypeEnum {
   VerifyDeleteSavedTicket = "verifyDeleteSavedTicket",
   ThemeChange = "themeChange",
   ChangePassword = "changePassword",
-  UpdateProfilePhoto = "updateProfilePhoto"
+  //UpdateProfilePhoto = "updateProfilePhoto"
 }
 
 export default ModalContentTypeEnum;

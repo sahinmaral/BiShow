@@ -23,7 +23,7 @@ const NavbarProfileSection: FC = () => {
   return (
     <div>
       <button
-        className="relative w-[40px] h-[40px] rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 border border-gray-300"
+        className="relative w-[40px] h-[40px] rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 border border-gray-300 dark:hover:border-cornflower-blue-600 hover:border-cornflower-blue-600"
         onClick={() => {
           setIsOpened(!isOpened);
         }}
@@ -32,10 +32,10 @@ const NavbarProfileSection: FC = () => {
           user.photoUrl.length !== 0 ? (
             <img src={user.photoUrl} className="rounded-full" />
           ) : (
-            <FontAwesomeIcon icon={faUser} />
+            <FontAwesomeIcon icon={faUser} className="dark:text-white" />
           )
         ) : (
-          <FontAwesomeIcon icon={faUser} />
+          <FontAwesomeIcon icon={faUser} className="dark:text-white" />
         )}
       </button>
 
@@ -81,14 +81,14 @@ const NavbarProfileSection: FC = () => {
             </span>
           </div>
           <ul className="py-2" aria-labelledby="user-menu-button">
-            {/* <li>
+            <li>
               <Link
-                to={"/profil"}
+                to={"/satin-aldigim-biletler"}
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
               >
-                Profil
+                Satın aldığım biletler
               </Link>
-            </li> */}
+            </li>
             <li>
               <Link
                 to={"/ayarlar"}

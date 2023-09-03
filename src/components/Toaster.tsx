@@ -1,4 +1,4 @@
-import { FC, Fragment, useEffect, useMemo, useState } from "react";
+import { FC, Fragment, useEffect, useMemo, useRef, useState } from "react";
 import ToasterType from "../enums/ToasterTypeEnum";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -22,7 +22,6 @@ type ToasterComponentsClassStates = {
   icon: string;
 };
 
-
 const Toaster: FC<ToasterProps> = ({ context }) => {
   const [maxDuration, setMaxDuration] = useState<number>(
     context.initialDuration
@@ -44,6 +43,8 @@ const Toaster: FC<ToasterProps> = ({ context }) => {
 
   const { clearToastr } = useToaster();
 
+  const toasterRef = useRef<HTMLDivElement>(null);
+
   const progressBarWidth = useMemo(() => {
     return (progress / maxDuration) * 100;
   }, [progress]);
@@ -58,7 +59,7 @@ const Toaster: FC<ToasterProps> = ({ context }) => {
       progressBar: initialData.progressBar.replaceAll("transparent", color),
     };
 
-    setToasterComponentsClassStates({...updatedStates});
+    setToasterComponentsClassStates({ ...updatedStates });
   };
 
   const renderByToasterType = () => {
@@ -88,6 +89,10 @@ const Toaster: FC<ToasterProps> = ({ context }) => {
 
   useEffect(() => {
     if (progress > 0) {
+      if(!toasterRef.current?.classList.contains("z-10")){
+        toasterRef.current?.classList.add("z-10");
+        toasterRef.current?.classList.remove("-z-10");
+      }
       const timerId = setInterval(() => {
         setProgress((prevTime) => prevTime - 1000);
       }, 1000);
@@ -97,6 +102,8 @@ const Toaster: FC<ToasterProps> = ({ context }) => {
       };
     } else {
       clearToastr();
+      toasterRef.current?.classList.add("-z-10");
+      toasterRef.current?.classList.remove("z-10");
     }
   }, [progress]);
 
@@ -109,9 +116,10 @@ const Toaster: FC<ToasterProps> = ({ context }) => {
   return (
     <Fragment>
       <div
+        ref={toasterRef}
         className={`fixed flex flex-col transition-opacity duration-300 ${
           progress === 0 ? "opacity-0" : "opacity-100"
-        } bottom-7 right-7 w-full max-w-xs pt-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800`}
+        } bottom-5 right-5 w-full max-w-xs pt-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800`}
       >
         <div className="flex items-center pb-4 px-4">
           <div className={toasterComponentsClassStates.iconBackground}>

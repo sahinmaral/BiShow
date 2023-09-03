@@ -1,7 +1,11 @@
 @tailwind base;
 
+html * {
+  @apply transition-colors duration-500;
+}
+
 body {
-  @apply m-0 p-0;
+  @apply m-0 p-0 dark:bg-gray-950 font-spaceGrotesk;
 }
 
 main {

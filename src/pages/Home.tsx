@@ -5,35 +5,52 @@ import constants from "../assets/constants";
 import HomepageSlickListDatas from "../types/HomeSlickListDatas";
 import { getPopularActivities } from "../services/database/databaseService";
 import { useDispatch, useSelector } from "react-redux";
-import { getAppState, setErrorMessageOfFetchResult, setIsLoadingOfFetchResult } from "../redux/app/appSlice";
+import {
+  getAppState,
+  setErrorMessageOfFetchResult,
+  setIsLoadingOfFetchResult,
+} from "../redux/app/appSlice";
 import CustomAlert from "../components/CustomAlert";
-import Loading from "./Loading";
 import AlertTypeEnum from "../enums/AlertTypeEnum";
+import LoadingSlickList from "../components/LoadingSlickList";
+import HomepageHeader from "../components/HomepageHeader";
 
 const Home: FC = () => {
   const [slickListDatas, setSlickListDatas] = useState<HomepageSlickListDatas>({
     theatres: [],
   });
   const { fetchResultAtPage } = useSelector(getAppState);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    getPopularActivities().then((result) => {
-      setSlickListDatas(result);
-    }).catch((error) => {
-      dispatch(setErrorMessageOfFetchResult(JSON.stringify(error)))
-    }).finally(() => {
-      dispatch(setIsLoadingOfFetchResult(false))
-    })
+    dispatch(setIsLoadingOfFetchResult(true));
+
+    getPopularActivities()
+      .then((result) => {
+        setSlickListDatas(result);
+      })
+      .catch((error) => {
+        dispatch(setErrorMessageOfFetchResult(JSON.stringify(error)));
+      })
+      .finally(() => {
+        dispatch(setIsLoadingOfFetchResult(false));
+      });
   }, []);
 
+  //FIXME : Kucuk genisliklerde yuklendigince slick list item aralarinda bayagi bosluk olusuyor
+  //FIXME : Genislik ile oynandiginda glitch oluyor
 
   return (
     <Fragment>
       <Helmet>
-        <title>{constants.APP_MAIN_TITLE}</title>
+        <title>Anasayfa - {constants.APP_MAIN_TITLE}</title>
       </Helmet>
-      {fetchResultAtPage.isLoading && <Loading />}
+      {fetchResultAtPage.isLoading && (
+        <Fragment>
+          <HomepageHeader />
+          <LoadingSlickList mainTitle="Tiyatro" mainRedirectUrl="/tiyatro" />
+        </Fragment>
+      )}
       {!fetchResultAtPage.isLoading && fetchResultAtPage.errorMessage && (
         <CustomAlert
           alertType={AlertTypeEnum.Danger}
@@ -42,6 +59,7 @@ const Home: FC = () => {
       )}
       {!fetchResultAtPage.isLoading && !fetchResultAtPage.errorMessage && (
         <Fragment>
+          <HomepageHeader />
           <SlickList
             mainTitle="Tiyatro"
             mainRedirectUrl="/tiyatro"

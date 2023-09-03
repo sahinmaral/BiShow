@@ -1,5 +1,5 @@
-import { FC, useCallback, useEffect, useMemo, useState } from "react";
-import { faBars, faClose, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { FC, Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import { faBars, faCircleNotch, faClose, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -10,7 +10,13 @@ import {
 import ModalContentType from "../types/ModalContentType";
 import ModalContentTypeEnum from "../enums/ModalContentTypeEnum";
 
-const TheatreShowroomFilterSection: FC = () => {
+type TheatreShowroomFilterSectionProps = {
+  isLoading: boolean;
+};
+
+const TheatreShowroomFilterSection: FC<TheatreShowroomFilterSectionProps> = ({
+  isLoading,
+}) => {
   const { activityFilter, activities } = useSelector(getAppState);
 
   const dispatch = useDispatch();
@@ -102,22 +108,23 @@ const TheatreShowroomFilterSection: FC = () => {
     <div
       className={`${
         isOpened ? "md:h-[140px] h-[80px] " : ""
-      }bg-purple-heart-300 rounded-lg p-4 w-full mt-10`}
+      }bg-purple-heart-300 dark:bg-transparent rounded-lg w-full mt-10`}
     >
       <div className="flex md:hidden justify-end py-3 pe-1">
         <button
-          className="text-slate-800"
+          className="text-slate-800 hover:text-slate-600 dark:text-white dark:hover:text-gray-400"
           onClick={() => setIsOpened(!isOpened)}
         >
           <FontAwesomeIcon icon={faBars} size="xl" />
         </button>
       </div>
+      {/* FIXME : Tema yuklenirken arkaplan yuklendikten sonra yazilarin rengi degisiyor */}
       <ul
         className={`${
           !isOpened || pageWidth > 768 ? "opacity-100" : "opacity-0 invisible"
         } transition-opacity duration-700 grid md:grid-rows-1 grid-rows-4 md:grid-cols-4 grid-cols-1 font-medium text-gray-900 bg-purple-heart-100 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white`}
       >
-        <li className="px-4 py-3 w-full flex flex-col gap-5 border-r border-r-gray-400 group hover:cursor-pointer hover:bg-purple-heart-200">
+        <li className="px-4 py-3 w-full flex flex-col gap-5 group hover:cursor-pointer hover:bg-purple-heart-200 dark:hover:bg-gray-800">
           <div className="flex justify-between">
             <p className="group-hover:hidden">Şehir</p>{" "}
             <p className="hidden group-hover:block">
@@ -135,21 +142,32 @@ const TheatreShowroomFilterSection: FC = () => {
             )}
           </div>
           <button
-            className="bg-dolly-300 hover:bg-dolly-200 rounded-md py-2 w-full flex gap-4 justify-center items-center"
+            disabled={isLoading}
+            className="bg-dolly-300 hover:bg-dolly-200 dark:text-black font-bold rounded-md py-2 w-full flex gap-4 justify-center items-center"
             onClick={() =>
               handleSetModalContent({
                 title: "Şehir",
                 isOpened: true,
                 modalType: ModalContentTypeEnum.FilterActivity,
-                data: JSON.stringify(getNonDuplicatedArray(mappedCountryOfActivities)),
+                data: JSON.stringify(
+                  getNonDuplicatedArray(mappedCountryOfActivities)
+                ),
               })
             }
           >
-            <FontAwesomeIcon icon={faPlus} />
-            <span>Ekle</span>
+            {isLoading ? (
+              <Fragment>
+                <FontAwesomeIcon icon={faCircleNotch} spin />
+              </Fragment>
+            ) : (
+              <Fragment>
+                <FontAwesomeIcon icon={faPlus} />
+                <span>Ekle</span>
+              </Fragment>
+            )}
           </button>
         </li>
-        <li className="px-4 py-3 w-full flex flex-col gap-5 border-r border-r-gray-400 group hover:cursor-pointer hover:bg-purple-heart-200">
+        <li className="px-4 py-3 w-full flex flex-col gap-5 group hover:cursor-pointer hover:bg-purple-heart-200 dark:hover:bg-gray-800">
           <div className="flex justify-between">
             <p className="group-hover:hidden">Mekan</p>{" "}
             <p className="hidden group-hover:block">
@@ -167,21 +185,32 @@ const TheatreShowroomFilterSection: FC = () => {
             )}
           </div>
           <button
-            className="group bg-dolly-300 hover:bg-dolly-200 rounded-md py-2 w-full flex gap-4 justify-center items-center"
+            className="group bg-dolly-300 hover:bg-dolly-200 dark:text-black font-bold rounded-md py-2 w-full flex gap-4 justify-center items-center"
+            disabled={isLoading}
             onClick={() =>
               handleSetModalContent({
                 title: "Mekan",
                 isOpened: true,
                 modalType: ModalContentTypeEnum.FilterActivity,
-                data: JSON.stringify(getNonDuplicatedArray(mappedLocationOfActivities)),
+                data: JSON.stringify(
+                  getNonDuplicatedArray(mappedLocationOfActivities)
+                ),
               })
             }
           >
-            <FontAwesomeIcon icon={faPlus} />
-            <span>Ekle</span>
+            {isLoading ? (
+              <Fragment>
+                <FontAwesomeIcon icon={faCircleNotch} spin />
+              </Fragment>
+            ) : (
+              <Fragment>
+                <FontAwesomeIcon icon={faPlus} />
+                <span>Ekle</span>
+              </Fragment>
+            )}
           </button>
         </li>
-        <li className="px-4 py-3 w-full flex flex-col gap-5 border-r border-r-gray-400 group hover:cursor-pointer hover:bg-purple-heart-200">
+        <li className="px-4 py-3 w-full flex flex-col gap-5 group hover:cursor-pointer hover:bg-purple-heart-200 dark:hover:bg-gray-800">
           <div className="flex justify-between">
             <p className="group-hover:hidden">Tür</p>{" "}
             <p className="hidden group-hover:block">
@@ -199,21 +228,32 @@ const TheatreShowroomFilterSection: FC = () => {
             )}
           </div>
           <button
-            className="bg-dolly-300 hover:bg-dolly-200 rounded-md py-2 w-full flex gap-4 justify-center items-center"
+            className="bg-dolly-300 hover:bg-dolly-200 dark:text-black font-bold rounded-md py-2 w-full flex gap-4 justify-center items-center"
+            disabled={isLoading}
             onClick={() =>
               handleSetModalContent({
                 title: "Tür",
                 isOpened: true,
                 modalType: ModalContentTypeEnum.FilterActivity,
-                data: JSON.stringify(getNonDuplicatedArray(mappedGenreOfActivities)),
+                data: JSON.stringify(
+                  getNonDuplicatedArray(mappedGenreOfActivities)
+                ),
               })
             }
           >
-            <FontAwesomeIcon icon={faPlus} />
-            <span>Ara</span>
+            {isLoading ? (
+              <Fragment>
+                <FontAwesomeIcon icon={faCircleNotch} spin />
+              </Fragment>
+            ) : (
+              <Fragment>
+                <FontAwesomeIcon icon={faPlus} />
+                <span>Ekle</span>
+              </Fragment>
+            )}
           </button>
         </li>
-        <li className="px-4 py-3 w-full flex flex-col gap-5 group hover:cursor-pointer hover:bg-purple-heart-200">
+        <li className="px-4 py-3 w-full flex flex-col gap-5 group hover:cursor-pointer hover:bg-purple-heart-200 dark:hover:bg-gray-800">
           <div className="flex justify-between">
             <p className="group-hover:hidden">Tarih</p>{" "}
             <p className="hidden group-hover:block">
@@ -231,18 +271,29 @@ const TheatreShowroomFilterSection: FC = () => {
             )}
           </div>
           <button
-            className="group bg-dolly-300 hover:bg-dolly-200 rounded-md py-2 w-full flex gap-4 justify-center items-center"
+            className="group bg-dolly-300 hover:bg-dolly-200 dark:text-black font-bold rounded-md py-2 w-full flex gap-4 justify-center items-center"
+            disabled={isLoading}
             onClick={() =>
               handleSetModalContent({
                 title: "Tarih",
                 isOpened: true,
                 modalType: ModalContentTypeEnum.FilterActivity,
-                data: JSON.stringify(getNonDuplicatedArray(mappedDateOfActivities)),
+                data: JSON.stringify(
+                  getNonDuplicatedArray(mappedDateOfActivities)
+                ),
               })
             }
           >
-            <FontAwesomeIcon icon={faPlus} />
-            <span>Ara</span>
+            {isLoading ? (
+              <Fragment>
+                <FontAwesomeIcon icon={faCircleNotch} spin />
+              </Fragment>
+            ) : (
+              <Fragment>
+                <FontAwesomeIcon icon={faPlus} />
+                <span>Ekle</span>
+              </Fragment>
+            )}
           </button>
         </li>
       </ul>
