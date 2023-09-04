@@ -35,7 +35,15 @@ const TheatreShowroom: FC = () => {
   const filteredActivities = useMemo(() => {
     const { type, genre, location, startingDate, city } = state.activityFilter;
 
-    let filteredData = state.activities;
+    let filteredData = state.activities.filter(
+      (activity) =>
+        activity.tickets
+          .map((ticket) => ticket.seances)
+          .reduce((result, arr) => result.concat(arr), [])
+          .filter((seance) => new Date(seance.startDate).getTime() > Date.now())
+          .length !== 0
+    );
+
     if (type !== undefined)
       filteredData = filteredData.filter((item) => item.activityType === type);
 
@@ -128,7 +136,6 @@ const TheatreShowroom: FC = () => {
         />
       )}
       <div className="container mx-auto">
-        {/* Breadcrumb */}
         <div className="flex justify-between border-b border-gray-400 py-5">
           <h1 className="text-4xl font-semibold dark:text-white">Tiyatro</h1>
 

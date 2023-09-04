@@ -53,13 +53,13 @@ const Toaster: FC<ToasterProps> = ({ context }) => {
     };
 
     const progressBarClasses = {
-      "h-1 opacity-30 transition-all duration-500 bg-green-600 dark:bg-green-800":
+      "h-1 opacity-30 transition-all duration-500 bg-green-600 dark:bg-green-400":
         context.toastType === ToasterType.Success,
-      "h-1 opacity-30 transition-all duration-500 bg-blue-600 dark:bg-blue-800":
+      "h-1 opacity-30 transition-all duration-500 bg-blue-600 dark:bg-blue-400":
         context.toastType === ToasterType.Info,
-      "h-1 opacity-30 transition-all duration-500 bg-red-600 dark:bg-red-800":
+      "h-1 opacity-30 transition-all duration-500 bg-red-600 dark:bg-red-400":
         context.toastType === ToasterType.Danger,
-      "h-1 opacity-30 transition-all duration-500 bg-yellow-600 dark:bg-yellow-800":
+      "h-1 opacity-30 transition-all duration-500 bg-yellow-600 dark:bg-yellow-400":
         context.toastType === ToasterType.Warning,
       "h-1 opacity-30 transition-all duration-500 bg-transparent-600 dark:bg-transparent-800":
         true,

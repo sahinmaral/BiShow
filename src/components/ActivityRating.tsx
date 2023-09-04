@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 type ActivityRatingProps = {
   rating: number;
   focusedPoint: number;
-  myRating:number;
+  myRating: number;
   setFocusedPoint: React.Dispatch<React.SetStateAction<number>>;
   handleRateActivity: () => void;
 };
@@ -41,6 +41,7 @@ const ActivityRating: FC<ActivityRatingProps> = ({
             <FontAwesomeIcon
               key={uuidv4()}
               onClick={() => {
+                setFocusedPoint(point + 1);
                 handleRateActivity();
               }}
               onMouseEnter={() => {

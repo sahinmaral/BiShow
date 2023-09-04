@@ -124,7 +124,7 @@ const TheatreShowroomFilterSection: FC<TheatreShowroomFilterSectionProps> = ({
           !isOpened || pageWidth > 768 ? "opacity-100" : "opacity-0 invisible"
         } mt-5 transition-opacity duration-700 grid md:grid-rows-1 grid-rows-4 md:grid-cols-4 grid-cols-1 font-medium`}
       >
-        <li className="px-4 py-3 md:rounded-l-lg rounded-t-lg rounded-bl-none w-full flex flex-col gap-5 group hover:cursor-pointer hover:bg-purple-heart-200 dark:hover:bg-gray-800 bg-purple-heart-100 dark:bg-gray-700">
+        <li className="px-4 py-3 rounded-tl-lg md:rounded-bl-lg max-md:rounded-tr-lg  w-full flex flex-col gap-5 group hover:cursor-pointer hover:bg-purple-heart-200 dark:hover:bg-gray-800 bg-purple-heart-100 dark:bg-gray-700">
           <div className="flex justify-between">
             <p className="group-hover:hidden text-gray-900 dark:text-white">
               Şehir
@@ -259,7 +259,7 @@ const TheatreShowroomFilterSection: FC<TheatreShowroomFilterSectionProps> = ({
             )}
           </button>
         </li>
-        <li className="px-4 py-3 rounded-r-lg md:rounded-b-lg w-full flex flex-col gap-5 group hover:cursor-pointer hover:bg-purple-heart-200 dark:hover:bg-gray-800 bg-purple-heart-100 dark:bg-gray-700">
+        <li className="px-4 py-3 max-md:rounded-bl-lg md:rounded-tr-lg rounded-br-lg w-full flex flex-col gap-5 group hover:cursor-pointer hover:bg-purple-heart-200 dark:hover:bg-gray-800 bg-purple-heart-100 dark:bg-gray-700">
           <div className="flex justify-between">
             <p className="group-hover:hidden text-gray-900 dark:text-white">
               Tarih

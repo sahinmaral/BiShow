@@ -33,7 +33,7 @@ const TheatreDetailTabs: FC<TheatreDetailTabsProps> = ({
     }
   }, []);
 
-  const [selectedTab, setSelectedTab] = useState<string>("rating");
+  const [selectedTab, setSelectedTab] = useState<string>("description");
   const [focusedPoint, setFocusedPoint] = useState<number>(myRating);
 
   const { setSuccessWithMessage, setDangerWithMessage } = useToaster();

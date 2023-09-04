@@ -1,4 +1,4 @@
-import { FC, Fragment, useCallback, useEffect, useState } from "react";
+import { FC, Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
@@ -33,14 +33,16 @@ const TheatreTicketsSection: FC<TheatreTicketsSectionProps> = ({
 
   useEffect(() => {
     if (user !== null) {
-      getBoughtedTicketOfUserByActivityId(user.id, activity.id).then((result) => {
-        result.docs.forEach((doc) => {
-          setBoughtedTickets([
-            ...boughtedTickets,
-            mapBoughtTicketFromDocumentData(doc.data()),
-          ]);
-        });
-      });
+      getBoughtedTicketOfUserByActivityId(user.id, activity.id).then(
+        (result) => {
+          result.docs.forEach((doc) => {
+            setBoughtedTickets([
+              ...boughtedTickets,
+              mapBoughtTicketFromDocumentData(doc.data()),
+            ]);
+          });
+        }
+      );
     }
   }, []);
 
@@ -73,16 +75,26 @@ const TheatreTicketsSection: FC<TheatreTicketsSectionProps> = ({
     }
   };
 
+  const filteredTickets = useMemo(() => {
+    return activity.tickets.filter((ticket) => {
+      ticket.seances.filter(
+        (seance) => new Date(seance.startDate).getTime() > Date.now()
+      ).length !== 0;
+    });
+  }, [activity]);
+
   return (
     <Fragment>
       <h1 className="text-2xl font-semibold dark:text-white">
         {activity.name} Biletleri ve Fiyatları
       </h1>
 
-      {activity.tickets.map((ticket) => {
+      {filteredTickets.map((ticket) => {
         return (
           <div className="rounded-lg w-full shadow-lg p-4" key={uuidv4()}>
-            <h2 className="text-2xl font-semibold dark:text-white">{ticket.city}</h2>
+            <h2 className="text-2xl font-semibold dark:text-white">
+              {ticket.city}
+            </h2>
             <h4 className="uppercase font-normal dark:text-white">
               <FontAwesomeIcon icon={faLocationDot} /> {activity.name}{" "}
               {ticket.city} Biletleri
@@ -132,8 +144,13 @@ const TheatreTicketsSection: FC<TheatreTicketsSectionProps> = ({
                         )}
                       </h2>
                       <p className="flex gap-2 items-center hover:cursor-pointer group">
-                        <FontAwesomeIcon icon={faLocationDot} className="dark:text-white group-hover:dark:text-cornflower-blue-200 group-hover:text-cornflower-blue-500" />{" "}
-                        <span className="dark:text-white group-hover:dark:text-cornflower-blue-200 group-hover:text-cornflower-blue-500">{seance.location.name}</span>
+                        <FontAwesomeIcon
+                          icon={faLocationDot}
+                          className="dark:text-white group-hover:dark:text-cornflower-blue-200 group-hover:text-cornflower-blue-500"
+                        />{" "}
+                        <span className="dark:text-white group-hover:dark:text-cornflower-blue-200 group-hover:text-cornflower-blue-500">
+                          {seance.location.name}
+                        </span>
                       </p>
                     </div>
                   </div>

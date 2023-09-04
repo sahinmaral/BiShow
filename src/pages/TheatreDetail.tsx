@@ -33,7 +33,7 @@ const TheatreDetail: FC = () => {
 
   const deadLineDateOfActivity = useMemo(() => {
     if (activityDetail) {
-      const concattedData = activityDetail?.tickets
+      const concattedData = activityDetail.tickets
         .map((ticket) => ticket.seances)
         .reduce((result, arr) => result.concat(arr), [])
         .sort(
@@ -68,6 +68,17 @@ const TheatreDetail: FC = () => {
     }
   }, [activityDetail]);
 
+  const countOfSeancesOfActivityThatIsNotOutdated = useMemo(() => {
+    if (activityDetail) {
+      const concattedData = activityDetail.tickets
+        .map((ticket) => ticket.seances)
+        .reduce((result, arr) => result.concat(arr), [])
+        .filter((seance) => new Date(seance.startDate).getTime() > Date.now());
+
+      return concattedData.length;
+    }
+  }, [activityDetail]);
+
   useEffect(() => {
     dispatch(setIsLoadingOfFetchResult(true));
     getActivityById(id!)
@@ -87,8 +98,8 @@ const TheatreDetail: FC = () => {
 
   return (
     <Fragment>
-      {(fetchResultAtPage.isLoading || !initialRender) && <Loading />}
-      {(!fetchResultAtPage.isLoading && fetchResultAtPage.errorMessage) && (
+      {(fetchResultAtPage.isLoading || initialRender) && <Loading />}
+      {!fetchResultAtPage.isLoading && fetchResultAtPage.errorMessage && (
         <CustomAlert
           alertType={AlertTypeEnum.Danger}
           message={fetchResultAtPage.errorMessage}
@@ -103,21 +114,22 @@ const TheatreDetail: FC = () => {
             message={`${id} ID ye sahip tiyatro bulunamadı.`}
           />
         )}
-      {(!initialRender && !fetchResultAtPage.isLoading && activityDetail) && (
+      {!initialRender && !fetchResultAtPage.isLoading && activityDetail && (
         <Fragment>
           <Helmet>
             <title>
               {activityDetail.name} - {constants.APP_MAIN_TITLE}
             </title>
           </Helmet>
+          {/* FIXME: Activity uzerinden herhangi bir sey secmeye calisildiginda arkadaki resmi seciyor. */}
           <div className="relative inline-block">
             <div className="absolute flex md:flex-row flex-col top-0 left-0 w-full h-full pointer-events-none bg-black bg-opacity-70">
               <img
                 src={activityDetail.thumbnail}
-                className="max-md:absolute top-5 max-md:left-1/2 max-md:-translate-x-1/2 rounded-lg scale-100 md:scale-75 md:w-fit w-[200px]"
+                className="max-md:absolute md:top-5 top-16 max-md:left-1/2 max-md:-translate-x-1/2 rounded-lg scale-100 md:scale-75 md:w-fit w-[200px]"
               />
 
-              <div className="flex flex-col max-md:items-center gap-3 md:mt-[3.5rem] mt-[320px] text-white">
+              <div className="flex flex-col max-md:items-center gap-3 md:mt-[3.5rem] mt-[350px] text-white">
                 <h1 className="max-sm:text-center text-3xl font-semibold">
                   {activityDetail.name}
                 </h1>
@@ -160,10 +172,15 @@ const TheatreDetail: FC = () => {
                   <span>{activityDetail.duration}</span>
                 </p>
                 <p>{activityDetail.genre}</p>
+                {countOfSeancesOfActivityThatIsNotOutdated === 0 && (
+                  <div className="capitalize text-center focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-md px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
+                    Bu etkinlik gerçekleşti
+                  </div>
+                )}
               </div>
             </div>
             <img
-              className="block w-screen sm:h-[550px] md:h-auto h-[600px]"
+              className="block w-screen md:h-auto h-[700px]"
               src="/theatre-detail-banner.jpg"
               alt="Image with Gray Overlay"
             />
@@ -173,7 +190,9 @@ const TheatreDetail: FC = () => {
               activityDetail={activityDetail}
               setActivityDetail={setActivityDetail}
             />
-            <TheatreTicketsSection activity={activityDetail} />
+            {countOfSeancesOfActivityThatIsNotOutdated !== 0 && (
+              <TheatreTicketsSection activity={activityDetail} />
+            )}
             <SameGenreTheatreRecommendations genreName={activityDetail.genre} />
           </div>
         </Fragment>
