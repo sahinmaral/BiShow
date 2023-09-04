@@ -9,7 +9,7 @@ import Activity from "../types/Activity";
 
 type TheatreDetailTabsProps = {
   activityDetail: Activity;
-  setActivityDetail: React.Dispatch<React.SetStateAction<Activity | undefined>>;
+  setActivityDetail: React.Dispatch<React.SetStateAction<Activity | null>>;
 };
 
 const TheatreDetailTabs: FC<TheatreDetailTabsProps> = ({
@@ -89,31 +89,31 @@ const TheatreDetailTabs: FC<TheatreDetailTabsProps> = ({
             <button
               className={`${
                 selectedTab !== "description"
-                  ? "border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+                  ? "border-transparent hover:border-gray-300"
                   : ""
-              } inline-block p-4 border-b-2 rounded-t-lg`}
+              } dark:text-white dark:hover:text-gray-300 hover:text-gray-600 inline-block p-4 border-b-2 rounded-t-lg`}
             >
               Açıklama
             </button>
           </li>
           <li className="mr-2" onClick={() => setSelectedTab("rules")}>
-            <button
+          <button
               className={`${
                 selectedTab !== "rules"
-                  ? "border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+                  ? "border-transparent hover:border-gray-300"
                   : ""
-              } inline-block p-4 border-b-2 rounded-t-lg`}
+              } dark:text-white dark:hover:text-gray-300 hover:text-gray-600 inline-block p-4 border-b-2 rounded-t-lg`}
             >
               Etkinlik Kuralları
             </button>
           </li>
           <li className="mr-2" onClick={() => setSelectedTab("rating")}>
-            <button
+          <button
               className={`${
                 selectedTab !== "rating"
-                  ? "border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+                  ? "border-transparent hover:border-gray-300"
                   : ""
-              } inline-block p-4 border-b-2 rounded-t-lg`}
+              } dark:text-white dark:hover:text-gray-300 hover:text-gray-600 inline-block p-4 border-b-2 rounded-t-lg`}
             >
               Puanlama
             </button>
@@ -124,7 +124,7 @@ const TheatreDetailTabs: FC<TheatreDetailTabsProps> = ({
         <div
           className={`${
             selectedTab !== "description" ? "hidden" : ""
-          } p-4 rounded-lg bg-gray-50 dark:bg-gray-800`}
+          } p-4 rounded-lg bg-gray-50 dark:bg-gray-800 dark:text-white`}
         >
           <p
             dangerouslySetInnerHTML={{ __html: activityDetail.description }}
@@ -133,7 +133,7 @@ const TheatreDetailTabs: FC<TheatreDetailTabsProps> = ({
         <div
           className={`${
             selectedTab !== "rules" ? "hidden" : ""
-          } p-4 rounded-lg bg-gray-50 dark:bg-gray-800`}
+          } p-4 rounded-lg bg-gray-50 dark:bg-gray-800 dark:text-white`}
         >
           <p>
             • Gününde ve saatinde kullanılmayan biletler geçersiz olup, bilet

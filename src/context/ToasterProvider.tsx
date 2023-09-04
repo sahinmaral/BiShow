@@ -31,22 +31,22 @@ const ToasterProvider: FC<ToasterContainerProps> = (props) => {
   const [context, setContext] = useState<ToasterContext>(initialData);
 
   const setInfoWithContext = (context: ToasterContext) => {
-    context.toastType = ToasterType.INFO;
+    context.toastType = ToasterType.Info;
     setContext(context);
   };
 
   const setDangerWithContext = (context: ToasterContext) => {
-    context.toastType = ToasterType.DANGER;
+    context.toastType = ToasterType.Danger;
     setContext(context);
   };
 
   const setWarningWithContext = (context: ToasterContext) => {
-    context.toastType = ToasterType.WARNING;
+    context.toastType = ToasterType.Warning;
     setContext(context);
   };
 
   const setSuccessWithContext = (context: ToasterContext) => {
-    context.toastType = ToasterType.SUCCESS;
+    context.toastType = ToasterType.Success;
     setContext(context);
   };
 
@@ -55,7 +55,7 @@ const ToasterProvider: FC<ToasterContainerProps> = (props) => {
       ...context,
       message: message,
       initialDuration: 5000,
-      toastType: ToasterType.INFO,
+      toastType: ToasterType.Info,
     });
   };
 
@@ -64,7 +64,7 @@ const ToasterProvider: FC<ToasterContainerProps> = (props) => {
       ...context,
       message: message,
       initialDuration: 5000,
-      toastType: ToasterType.DANGER,
+      toastType: ToasterType.Danger,
     });
   };
 
@@ -73,7 +73,7 @@ const ToasterProvider: FC<ToasterContainerProps> = (props) => {
       ...context,
       message: message,
       initialDuration: 5000,
-      toastType: ToasterType.WARNING,
+      toastType: ToasterType.Warning,
     });
   };
 
@@ -82,7 +82,7 @@ const ToasterProvider: FC<ToasterContainerProps> = (props) => {
       ...context,
       message: message,
       initialDuration: 5000,
-      toastType: ToasterType.SUCCESS,
+      toastType: ToasterType.Success,
     });
   };
 

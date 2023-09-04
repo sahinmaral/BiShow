@@ -55,7 +55,7 @@ const ActivityRating: FC<ActivityRatingProps> = ({
           );
         })}
       </div>
-      <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+      <p className="text-sm font-medium text-gray-500 dark:text-white">
         {rating !== 0 && (
           <span>
             Kullanıcılar ortalama puan olarak 10 üzerinden {rating} verdi

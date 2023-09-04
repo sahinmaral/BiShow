@@ -11,15 +11,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import ToasterContext from "../types/ToasterContext";
 import { useToaster } from "../context/ToasterProvider";
+import clsx from "clsx";
 
 type ToasterProps = {
   context: ToasterContext;
-};
-
-type ToasterComponentsClassStates = {
-  iconBackground: string;
-  progressBar: string;
-  icon: string;
 };
 
 const Toaster: FC<ToasterProps> = ({ context }) => {
@@ -30,58 +25,68 @@ const Toaster: FC<ToasterProps> = ({ context }) => {
 
   const [icon, setIcon] = useState<IconDefinition>(faCircleInfo);
 
-  const initialData = {
-    iconBackground:
-      "inline-flex items-center justify-center flex-shrink-0 w-8 h-8 bg-transparent-100 rounded-lg dark:bg-transparent-800",
-    icon: "text-transparent-500 dark:text-transparent-200",
-    progressBar:
-      "bg-transparent-600 h-1 opacity-30 transition-all duration-500",
-  };
-
-  const [toasterComponentsClassStates, setToasterComponentsClassStates] =
-    useState<ToasterComponentsClassStates>(initialData);
-
   const { clearToastr } = useToaster();
 
   const toasterRef = useRef<HTMLDivElement>(null);
+
+  const classesOfComponents = useMemo(() => {
+    const iconBackgroundClasses = {
+      "bg-green-100 dark:bg-green-800":
+        context.toastType === ToasterType.Success,
+      "bg-blue-100 dark:bg-blue-800": context.toastType === ToasterType.Info,
+      "bg-red-100 dark:bg-red-800": context.toastType === ToasterType.Danger,
+      "bg-yellow-100 dark:bg-yellow-800":
+        context.toastType === ToasterType.Warning,
+      "bg-transparent-100 dark:bg-transparent-800": !context.toastType,
+    };
+
+    const iconClasses = {
+      "text-green-500 dark:text-green-200":
+        context.toastType === ToasterType.Success,
+      "text-blue-500 dark:text-blue-200":
+        context.toastType === ToasterType.Info,
+      "text-yellow-500 dark:text-yellow-200":
+        context.toastType === ToasterType.Danger,
+      "text-red-500 dark:text-red-200":
+        context.toastType === ToasterType.Warning,
+      "text-transparent-500 dark:text-transparent-200": !context.toastType,
+    };
+
+    const progressBarClasses = {
+      "h-1 opacity-30 transition-all duration-500 bg-green-600 dark:bg-green-800":
+        context.toastType === ToasterType.Success,
+      "h-1 opacity-30 transition-all duration-500 bg-blue-600 dark:bg-blue-800":
+        context.toastType === ToasterType.Info,
+      "h-1 opacity-30 transition-all duration-500 bg-red-600 dark:bg-red-800":
+        context.toastType === ToasterType.Danger,
+      "h-1 opacity-30 transition-all duration-500 bg-yellow-600 dark:bg-yellow-800":
+        context.toastType === ToasterType.Warning,
+      "h-1 opacity-30 transition-all duration-500 bg-transparent-600 dark:bg-transparent-800":
+        true,
+    };
+
+    return { progressBarClasses, iconBackgroundClasses, iconClasses };
+  }, [context]);
 
   const progressBarWidth = useMemo(() => {
     return (progress / maxDuration) * 100;
   }, [progress]);
 
-  const setColorOfEveryToasterComponents = (color: string) => {
-    const updatedStates: ToasterComponentsClassStates = {
-      iconBackground: initialData.iconBackground.replaceAll(
-        "transparent",
-        color
-      ),
-      icon: initialData.icon.replace("transparent", color),
-      progressBar: initialData.progressBar.replaceAll("transparent", color),
-    };
-
-    setToasterComponentsClassStates({ ...updatedStates });
-  };
-
-  const renderByToasterType = () => {
+  const setIconOfToaster = () => {
     switch (context.toastType) {
-      case ToasterType.SUCCESS:
-        setColorOfEveryToasterComponents("green");
+      case ToasterType.Success:
         setIcon(faCircleCheck);
         break;
-      case ToasterType.DANGER:
-        setColorOfEveryToasterComponents("red");
+      case ToasterType.Danger:
         setIcon(faCircleXmark);
         break;
-      case ToasterType.WARNING:
-        setColorOfEveryToasterComponents("yellow");
+      case ToasterType.Warning:
         setIcon(faCircleExclamation);
         break;
-      case ToasterType.INFO:
-        setColorOfEveryToasterComponents("blue");
+      case ToasterType.Info:
         setIcon(faCircleInfo);
         break;
       default:
-        setColorOfEveryToasterComponents("transparent");
         setIcon(faCircleInfo);
         break;
     }
@@ -89,7 +94,7 @@ const Toaster: FC<ToasterProps> = ({ context }) => {
 
   useEffect(() => {
     if (progress > 0) {
-      if(!toasterRef.current?.classList.contains("z-10")){
+      if (!toasterRef.current?.classList.contains("z-10")) {
         toasterRef.current?.classList.add("z-10");
         toasterRef.current?.classList.remove("-z-10");
       }
@@ -108,7 +113,7 @@ const Toaster: FC<ToasterProps> = ({ context }) => {
   }, [progress]);
 
   useEffect(() => {
-    renderByToasterType();
+    setIconOfToaster();
     setMaxDuration(context.initialDuration);
     setProgress(context.initialDuration);
   }, [context.initialDuration]);
@@ -122,10 +127,15 @@ const Toaster: FC<ToasterProps> = ({ context }) => {
         } bottom-5 right-5 w-full max-w-xs pt-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800`}
       >
         <div className="flex items-center pb-4 px-4">
-          <div className={toasterComponentsClassStates.iconBackground}>
+          <div
+            className={clsx(
+              `!transition-none inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg`,
+              classesOfComponents.iconBackgroundClasses
+            )}
+          >
             <FontAwesomeIcon
               icon={icon}
-              className={toasterComponentsClassStates.icon}
+              className={clsx(classesOfComponents.iconClasses)}
             />
           </div>
           <div className="ml-3 text-sm font-normal">{context.message}</div>
@@ -139,7 +149,7 @@ const Toaster: FC<ToasterProps> = ({ context }) => {
         </div>
         <div className={`w-full bg-gray-200 h-1 dark:bg-gray-700`}>
           <div
-            className={toasterComponentsClassStates.progressBar}
+            className={clsx(classesOfComponents.progressBarClasses)}
             style={{ width: `${progressBarWidth}%` }}
           ></div>
         </div>

@@ -1,4 +1,4 @@
-import { FC, MouseEvent, useRef } from "react";
+import { FC } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAppState, setModalVisibilityToggle } from "../redux/app/appSlice";
 import ModalContent from "./ModalContent";
@@ -7,7 +7,7 @@ const ModalOverlay: FC = () => {
   const { modalContent } = useSelector(getAppState);
   const dispatch = useDispatch();
 
-  const handleCloseModal = (event: MouseEvent<HTMLDivElement>) => {
+  const handleCloseModal = () => {
     dispatch(setModalVisibilityToggle());
 
     const targetElement = document.querySelector("html, body") as HTMLElement;

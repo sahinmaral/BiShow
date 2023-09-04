@@ -2,7 +2,7 @@ import { FC } from "react";
 
 const HomepageHeader: FC = () => {
   return (
-    <div className="container mx-auto py-5 italic flex flex-col md:items-stretch items-center">
+    <div className="container mx-auto py-5 italic flex flex-col md:items-stretch items-center hover:cursor-default">
       <div className="flex justify-start">
         <h1 className="text-xl xl:text-6xl lg:text-5xl md:text-4xl sm:text-2xl font-bold dark:text-white">
           <span className="text-cornflower-blue-500">Unutkan</span> bir{" "}

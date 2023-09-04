@@ -75,15 +75,15 @@ const TheatreTicketsSection: FC<TheatreTicketsSectionProps> = ({
 
   return (
     <Fragment>
-      <h1 className="text-2xl font-semibold">
+      <h1 className="text-2xl font-semibold dark:text-white">
         {activity.name} Biletleri ve Fiyatları
       </h1>
 
       {activity.tickets.map((ticket) => {
         return (
           <div className="rounded-lg w-full shadow-lg p-4" key={uuidv4()}>
-            <h2 className="text-2xl font-semibold">{ticket.city}</h2>
-            <h4 className="uppercase font-normal">
+            <h2 className="text-2xl font-semibold dark:text-white">{ticket.city}</h2>
+            <h4 className="uppercase font-normal dark:text-white">
               <FontAwesomeIcon icon={faLocationDot} /> {activity.name}{" "}
               {ticket.city} Biletleri
             </h4>
@@ -95,7 +95,7 @@ const TheatreTicketsSection: FC<TheatreTicketsSectionProps> = ({
                 >
                   <div className="flex gap-5">
                     <div className="rounded-lg px-2 py-1 border border-gray-200 flex flex-col items-center justify-center">
-                      <p className="text-sm">
+                      <p className="text-sm dark:text-white">
                         {new Date(seance.startDate).toLocaleDateString(
                           "tr-TR",
                           {
@@ -103,7 +103,7 @@ const TheatreTicketsSection: FC<TheatreTicketsSectionProps> = ({
                           }
                         )}
                       </p>
-                      <p className="text-2xl font-bold">
+                      <p className="text-2xl font-bold dark:text-cornflower-blue-500">
                         {new Date(seance.startDate).toLocaleDateString(
                           "tr-TR",
                           {
@@ -113,7 +113,7 @@ const TheatreTicketsSection: FC<TheatreTicketsSectionProps> = ({
                       </p>
                     </div>
                     <div className="flex flex-col gap-2">
-                      <h2 className="text-xl font-semibold">
+                      <h2 className="text-xl font-semibold dark:text-white">
                         {new Date(seance.startDate).toLocaleDateString(
                           "tr-TR",
                           {
@@ -131,9 +131,9 @@ const TheatreTicketsSection: FC<TheatreTicketsSectionProps> = ({
                           }
                         )}
                       </h2>
-                      <p className="flex gap-2 items-center hover:text-cornflower-blue-500 hover:cursor-pointer">
-                        <FontAwesomeIcon icon={faLocationDot} />{" "}
-                        <span>{seance.location.name}</span>
+                      <p className="flex gap-2 items-center hover:cursor-pointer group">
+                        <FontAwesomeIcon icon={faLocationDot} className="dark:text-white group-hover:dark:text-cornflower-blue-200 group-hover:text-cornflower-blue-500" />{" "}
+                        <span className="dark:text-white group-hover:dark:text-cornflower-blue-200 group-hover:text-cornflower-blue-500">{seance.location.name}</span>
                       </p>
                     </div>
                   </div>

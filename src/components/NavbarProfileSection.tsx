@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, Fragment, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { getAuthState } from "../redux/auth/authSlice";
@@ -6,12 +6,31 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { logOutUser } from "../services/auth/authService";
 import { useToaster } from "../context/ToasterProvider";
+import { getAppState } from "../redux/app/appSlice";
 
 const NavbarProfileSection: FC = () => {
   const [isOpened, setIsOpened] = useState<boolean>(false);
 
+  const bodyRef = useRef<HTMLBodyElement>(document.querySelector("body"));
+
   const { setSuccessWithMessage } = useToaster();
   const { user } = useSelector(getAuthState);
+  const { fetchResultAtPage } = useSelector(getAppState);
+
+  useEffect(() => {
+    bodyRef.current?.addEventListener("click", () => {
+      if (isOpened) {
+        setIsOpened(false);
+      }
+    });
+    return () => {
+      bodyRef.current?.removeEventListener("click", () => {
+        if (isOpened) {
+          setIsOpened(false);
+        }
+      });
+    };
+  }, [isOpened]);
 
   const logOut = () => {
     logOutUser().then(() => {
@@ -21,10 +40,12 @@ const NavbarProfileSection: FC = () => {
   };
 
   return (
-    <div>
+    <Fragment>
       <button
+        disabled={fetchResultAtPage.isLoading}
         className="relative w-[40px] h-[40px] rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 border border-gray-300 dark:hover:border-cornflower-blue-600 hover:border-cornflower-blue-600"
-        onClick={() => {
+        onClick={(event) => {
+          event.stopPropagation();
           setIsOpened(!isOpened);
         }}
       >
@@ -43,9 +64,9 @@ const NavbarProfileSection: FC = () => {
         <div
           className={`${
             isOpened ? "z-10 opacity-100" : "-z-10 opacity-0"
-          } transition-opacity duration-300 absolute right-0 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600`}
+          } transition-opacity duration-300 absolute top-[60px] right-0 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600`}
         >
-          <ul className="py-2" aria-labelledby="user-menu-button">
+          <ul className="py-2">
             <li>
               <Link
                 to={"/giris-yap"}
@@ -70,7 +91,7 @@ const NavbarProfileSection: FC = () => {
         <div
           className={`${
             isOpened ? "z-10 opacity-100" : "-z-10 opacity-0"
-          } transition-opacity duration-300 absolute right-0 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600`}
+          } transition-opacity duration-300 absolute top-[60px] right-0 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600`}
         >
           <div className="px-4 py-3 hover:cursor-default">
             <span className="block text-sm text-gray-900 dark:text-white">
@@ -84,6 +105,7 @@ const NavbarProfileSection: FC = () => {
             <li>
               <Link
                 to={"/satin-aldigim-biletler"}
+                onClick={() => setIsOpened(false)}
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
               >
                 Satın aldığım biletler
@@ -113,7 +135,7 @@ const NavbarProfileSection: FC = () => {
           </ul>
         </div>
       )}
-    </div>
+    </Fragment>
   );
 };
 

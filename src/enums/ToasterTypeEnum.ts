@@ -1,8 +1,8 @@
 enum ToasterType{
-    SUCCESS = "success",
-    DANGER = "danger",
-    WARNING = "warning",
-    INFO = "info",
+    Success = "Success",
+    Danger = "Danger",
+    Warning = "Warning",
+    Info = "Info",
   }
 
   export default ToasterType;

@@ -4,7 +4,7 @@ import Activity from "../types/Activity";
 import { getActivityById } from "../services/database/databaseService";
 import { ActivitySeanceType } from "../types/ActivitiyTicketType";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock } from "@fortawesome/free-solid-svg-icons";
+import { faCalendar, faClock } from "@fortawesome/free-solid-svg-icons";
 import { v4 as uuidv4 } from "uuid";
 import TheatreDetailTabs from "../components/TheatreDetailTabs";
 import TheatreTicketsSection from "../components/TheatreTicketsSection";
@@ -19,6 +19,8 @@ import { mapActivityFromDocumentData } from "../helpers/firebaseHelper";
 import Loading from "./Loading";
 import CustomAlert from "../components/CustomAlert";
 import AlertTypeEnum from "../enums/AlertTypeEnum";
+import { Helmet } from "react-helmet-async";
+import constants from "../assets/constants";
 
 const TheatreDetail: FC = () => {
   const { id } = useParams();
@@ -26,10 +28,11 @@ const TheatreDetail: FC = () => {
   const { fetchResultAtPage } = useSelector(getAppState);
   const dispatch = useDispatch();
 
-  const [activityDetail, setActivityDetail] = useState<Activity | undefined>();
+  const [activityDetail, setActivityDetail] = useState<Activity | null>(null);
+  const [initialRender, setInitialRender] = useState(true);
 
   const deadLineDateOfActivity = useMemo(() => {
-    if (activityDetail !== undefined) {
+    if (activityDetail) {
       const concattedData = activityDetail?.tickets
         .map((ticket) => ticket.seances)
         .reduce((result, arr) => result.concat(arr), [])
@@ -52,7 +55,7 @@ const TheatreDetail: FC = () => {
   }, [activityDetail]);
 
   const locationsOfActivity = useMemo(() => {
-    if (activityDetail !== undefined) {
+    if (activityDetail) {
       const concattedData = activityDetail.tickets.map((ticket) => ticket.city);
 
       const filteredFromDuplicatedItems = concattedData.filter(
@@ -71,33 +74,42 @@ const TheatreDetail: FC = () => {
       .then((docSnap) => {
         if (docSnap.exists())
           setActivityDetail(mapActivityFromDocumentData(docSnap.data()));
+        else setActivityDetail(null);
       })
       .catch((error) => {
         dispatch(setErrorMessageOfFetchResult(error.message));
       })
       .finally(() => {
         dispatch(setIsLoadingOfFetchResult(false));
+        setInitialRender(false);
       });
   }, [id]);
 
-
   return (
     <Fragment>
-      {fetchResultAtPage.isLoading && <Loading />}
-      {fetchResultAtPage.errorMessage && (
+      {(fetchResultAtPage.isLoading || !initialRender) && <Loading />}
+      {(!fetchResultAtPage.isLoading && fetchResultAtPage.errorMessage) && (
         <CustomAlert
           alertType={AlertTypeEnum.Danger}
           message={fetchResultAtPage.errorMessage}
         />
       )}
-      {!fetchResultAtPage.isLoading && activityDetail === undefined && (
-        <CustomAlert
-          alertType={AlertTypeEnum.Danger}
-          message={`${id} ID ye sahip tiyatro bulunamadı.`}
-        />
-      )}
-      {!fetchResultAtPage.isLoading && activityDetail !== undefined && (
+      {!initialRender &&
+        !fetchResultAtPage.isLoading &&
+        !fetchResultAtPage.errorMessage &&
+        !activityDetail && (
+          <CustomAlert
+            alertType={AlertTypeEnum.Danger}
+            message={`${id} ID ye sahip tiyatro bulunamadı.`}
+          />
+        )}
+      {(!initialRender && !fetchResultAtPage.isLoading && activityDetail) && (
         <Fragment>
+          <Helmet>
+            <title>
+              {activityDetail.name} - {constants.APP_MAIN_TITLE}
+            </title>
+          </Helmet>
           <div className="relative inline-block">
             <div className="absolute flex md:flex-row flex-col top-0 left-0 w-full h-full pointer-events-none bg-black bg-opacity-70">
               <img
@@ -117,34 +129,37 @@ const TheatreDetail: FC = () => {
                     </span>
                   ))}
                 </p>
-                <p className="md:ms-4 ms-0">
-                  <span>
-                    {new Date(activityDetail.startingDate).toLocaleDateString(
-                      "tr-TR",
-                      {
+                <div className="flex items-center">
+                  <FontAwesomeIcon icon={faCalendar} />
+                  <p className="ms-4">
+                    <span>
+                      {new Date(activityDetail.startingDate).toLocaleDateString(
+                        "tr-TR",
+                        {
+                          month: "long",
+                          day: "numeric",
+                        }
+                      )}
+                    </span>{" "}
+                    -{" "}
+                    <span>
+                      {deadLineDateOfActivity?.toLocaleDateString("tr-TR", {
+                        year: "numeric",
                         month: "long",
                         day: "numeric",
-                      }
-                    )}
-                  </span>{" "}
-                  -{" "}
-                  <span>
-                    {deadLineDateOfActivity?.toLocaleDateString("tr-TR", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </span>
-                </p>
+                      })}
+                    </span>
+                  </p>
+                </div>
                 <p
                   className={`${
                     activityDetail.duration === null ? "hidden" : "flex"
-                  } gap-3 items-center md:ms-4 ms-0`}
+                  } gap-3 items-center`}
                 >
                   <FontAwesomeIcon icon={faClock} />
                   <span>{activityDetail.duration}</span>
                 </p>
-                <p className="md:ms-4 ms-0">{activityDetail.genre}</p>
+                <p>{activityDetail.genre}</p>
               </div>
             </div>
             <img

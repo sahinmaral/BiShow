@@ -16,6 +16,8 @@ import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import ModalContentTypeEnum from "../enums/ModalContentTypeEnum";
 import BoughtTicketType from "../types/BoughtTicketType";
+import { Helmet } from "react-helmet-async";
+import constants from "../assets/constants";
 
 const BoughTicketsShowroom: FC = () => {
   const { fetchResultAtPage } = useSelector(getAppState);
@@ -68,10 +70,13 @@ const BoughTicketsShowroom: FC = () => {
     }
   }, [user]);
 
-
   return (
     //TODO: Eger kullanici bilet silerse ya da bilet kaydederse bunun diger sayfalarda da anlik goruntulenmesi gerekir.
+    //TODO : Filtreleme, siralama ve sayfalama yapilmasi gerekiyor
     <Fragment>
+      <Helmet>
+        <title>Satın aldığım biletler - {constants.APP_MAIN_TITLE}</title>
+      </Helmet>
       {fetchResultAtPage.isLoading && <Loading />}
       {!fetchResultAtPage.isLoading && fetchResultAtPage.errorMessage && (
         <CustomAlert
@@ -81,10 +86,15 @@ const BoughTicketsShowroom: FC = () => {
       )}
       {!fetchResultAtPage.isLoading && !fetchResultAtPage.errorMessage && (
         <div className="container mx-auto flex flex-col">
-          <h1 className="text-center text-2xl font-semibold my-10">
+          <h1 className="text-center text-2xl font-semibold my-10 dark:text-white">
             Satın aldığım biletler
           </h1>
-          {boughtedTickets.length === 0 && <CustomAlert alertType={AlertTypeEnum.Info} message="Şu anlık kaydettiğin herhangi bir biletin yok" />}
+          {boughtedTickets.length === 0 && (
+            <CustomAlert
+              alertType={AlertTypeEnum.Info}
+              message="Şu anlık kaydettiğin herhangi bir biletin yok"
+            />
+          )}
           {boughtedTickets.length > 0 && (
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
               <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">

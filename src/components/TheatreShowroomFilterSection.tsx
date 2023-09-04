@@ -1,5 +1,10 @@
 import { FC, Fragment, useCallback, useEffect, useMemo, useState } from "react";
-import { faBars, faCircleNotch, faClose, faPlus } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBars,
+  faCircleNotch,
+  faClose,
+  faPlus,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -105,36 +110,33 @@ const TheatreShowroomFilterSection: FC<TheatreShowroomFilterSectionProps> = ({
   };
 
   return (
-    <div
-      className={`${
-        isOpened ? "md:h-[140px] h-[80px] " : ""
-      }bg-purple-heart-300 dark:bg-transparent rounded-lg w-full mt-10`}
-    >
-      <div className="flex md:hidden justify-end py-3 pe-1">
+    <div className={`${isOpened ? "md:h-[140px] h-[80px] " : ""} w-full mt-10`}>
+      <div className="flex md:hidden justify-end py-3 pe-1 bg-white dark:bg-black">
         <button
-          className="text-slate-800 hover:text-slate-600 dark:text-white dark:hover:text-gray-400"
+          className="text-slate-800 hover:text-slate-600 dark:text-white dark:hover:text-gray-400 !transition-none"
           onClick={() => setIsOpened(!isOpened)}
         >
           <FontAwesomeIcon icon={faBars} size="xl" />
         </button>
       </div>
-      {/* FIXME : Tema yuklenirken arkaplan yuklendikten sonra yazilarin rengi degisiyor */}
       <ul
         className={`${
           !isOpened || pageWidth > 768 ? "opacity-100" : "opacity-0 invisible"
-        } transition-opacity duration-700 grid md:grid-rows-1 grid-rows-4 md:grid-cols-4 grid-cols-1 font-medium text-gray-900 bg-purple-heart-100 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white`}
+        } mt-5 transition-opacity duration-700 grid md:grid-rows-1 grid-rows-4 md:grid-cols-4 grid-cols-1 font-medium`}
       >
-        <li className="px-4 py-3 w-full flex flex-col gap-5 group hover:cursor-pointer hover:bg-purple-heart-200 dark:hover:bg-gray-800">
+        <li className="px-4 py-3 md:rounded-l-lg rounded-t-lg rounded-bl-none w-full flex flex-col gap-5 group hover:cursor-pointer hover:bg-purple-heart-200 dark:hover:bg-gray-800 bg-purple-heart-100 dark:bg-gray-700">
           <div className="flex justify-between">
-            <p className="group-hover:hidden">Şehir</p>{" "}
-            <p className="hidden group-hover:block">
+            <p className="group-hover:hidden text-gray-900 dark:text-white">
+              Şehir
+            </p>{" "}
+            <p className="hidden group-hover:block text-gray-900 dark:text-white">
               {activityFilter.city === undefined
                 ? "Şehir"
                 : activityFilter.city}
             </p>
             {activityFilter.city !== undefined && (
               <button
-                className="hidden group-hover:block hover:text-red-700"
+                className="hidden group-hover:block dark:text-white hover:text-red-700 hover:dark:text-red-700 !transition-none"
                 onClick={() => clearActivityFilter("Şehir")}
               >
                 <FontAwesomeIcon icon={faClose} />
@@ -167,17 +169,19 @@ const TheatreShowroomFilterSection: FC<TheatreShowroomFilterSectionProps> = ({
             )}
           </button>
         </li>
-        <li className="px-4 py-3 w-full flex flex-col gap-5 group hover:cursor-pointer hover:bg-purple-heart-200 dark:hover:bg-gray-800">
+        <li className="px-4 py-3 w-full flex flex-col gap-5 group hover:cursor-pointer hover:bg-purple-heart-200 dark:hover:bg-gray-800 bg-purple-heart-100 dark:bg-gray-700">
           <div className="flex justify-between">
-            <p className="group-hover:hidden">Mekan</p>{" "}
-            <p className="hidden group-hover:block">
+            <p className="group-hover:hidden text-gray-900 dark:text-white">
+              Mekan
+            </p>{" "}
+            <p className="hidden group-hover:block text-gray-900 dark:text-white">
               {activityFilter.location === undefined
                 ? "Mekan"
                 : activityFilter.location}
             </p>
             {activityFilter.location !== undefined && (
               <button
-                className="hidden group-hover:block hover:text-red-700"
+                className="hidden group-hover:block dark:text-white hover:text-red-700 hover:dark:text-red-700 !transition-none"
                 onClick={() => clearActivityFilter("Mekan")}
               >
                 <FontAwesomeIcon icon={faClose} />
@@ -210,17 +214,19 @@ const TheatreShowroomFilterSection: FC<TheatreShowroomFilterSectionProps> = ({
             )}
           </button>
         </li>
-        <li className="px-4 py-3 w-full flex flex-col gap-5 group hover:cursor-pointer hover:bg-purple-heart-200 dark:hover:bg-gray-800">
+        <li className="px-4 py-3 w-full flex flex-col gap-5 group hover:cursor-pointer hover:bg-purple-heart-200 dark:hover:bg-gray-800 bg-purple-heart-100 dark:bg-gray-700">
           <div className="flex justify-between">
-            <p className="group-hover:hidden">Tür</p>{" "}
-            <p className="hidden group-hover:block">
+            <p className="group-hover:hidden text-gray-900 dark:text-white">
+              Tür
+            </p>{" "}
+            <p className="hidden group-hover:block text-gray-900 dark:text-white">
               {activityFilter.genre === undefined
                 ? "Tür"
                 : activityFilter.genre}
             </p>
             {activityFilter.genre !== undefined && (
               <button
-                className="hidden group-hover:block hover:text-red-700"
+                className="hidden group-hover:block dark:text-white hover:text-red-700 hover:dark:text-red-700 !transition-none"
                 onClick={() => clearActivityFilter("Tür")}
               >
                 <FontAwesomeIcon icon={faClose} />
@@ -253,17 +259,19 @@ const TheatreShowroomFilterSection: FC<TheatreShowroomFilterSectionProps> = ({
             )}
           </button>
         </li>
-        <li className="px-4 py-3 w-full flex flex-col gap-5 group hover:cursor-pointer hover:bg-purple-heart-200 dark:hover:bg-gray-800">
+        <li className="px-4 py-3 rounded-r-lg md:rounded-b-lg w-full flex flex-col gap-5 group hover:cursor-pointer hover:bg-purple-heart-200 dark:hover:bg-gray-800 bg-purple-heart-100 dark:bg-gray-700">
           <div className="flex justify-between">
-            <p className="group-hover:hidden">Tarih</p>{" "}
-            <p className="hidden group-hover:block">
+            <p className="group-hover:hidden text-gray-900 dark:text-white">
+              Tarih
+            </p>{" "}
+            <p className="hidden group-hover:block text-gray-900 dark:text-white">
               {activityFilter.startingDate === undefined
                 ? "Tarih"
                 : activityFilter.startingDate.toString()}
             </p>
             {activityFilter.startingDate !== undefined && (
               <button
-                className="hidden group-hover:block hover:text-red-700"
+                className="hidden group-hover:block dark:text-white hover:text-red-700 hover:dark:text-red-700 !transition-none"
                 onClick={() => clearActivityFilter("Tarih")}
               >
                 <FontAwesomeIcon icon={faClose} />

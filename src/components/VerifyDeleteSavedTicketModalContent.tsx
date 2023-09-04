@@ -56,8 +56,8 @@ const VerifyDeleteSavedTicketModalContent: FC<
       </div>
 
       <div className="p-6 space-y-6">
-        {modalContent.mainContent}
-        <div className="flex gap-5 justify-center">
+        <p className="text-center dark:text-white">{modalContent.mainContent}</p>
+        <div className="mt-5 flex gap-5 justify-center">
           <button
             type="button"
             onClick={() => handleDeleteSavedTicket()}
