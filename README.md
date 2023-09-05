@@ -3,6 +3,7 @@
 ## Unutkan bir aktivist için yol arkadaşı sağlayacak uygulama
 
 Bu uygulama , biletinial.com üzerindeki verilerin `data scraping` yöntemi ile alınarak veri öbeği oluşturulmuş ve bu veri öbekleri ile kullanıcı yönetimi popüler BaaS hizmetlerinden biri olan Google Firebase ile sağlanmıştır.
+Canlı link : https://bi-show.vercel.app/
 
 Veri öbeği şu anlık sadece biletinial.com sitesi üzerinde aktivite türü tiyatrolardır. Aktivitelerin modellenmesi şu şekildedir :
 
