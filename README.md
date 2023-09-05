@@ -1,27 +1,79 @@
-# React + TypeScript + Vite
+# BiShow
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Unutkan bir aktivist için yol arkadaşı sağlayacak uygulama
 
-Currently, two official plugins are available:
+Bu uygulama , biletinial.com üzerindeki verilerin `data scraping` yöntemi ile alınarak veri öbeği oluşturulmuş ve bu veri öbekleri ile kullanıcı yönetimi popüler BaaS hizmetlerinden biri olan Google Firebase ile sağlanmıştır.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Veri öbeği şu anlık sadece biletinial.com sitesi üzerinde aktivite türü tiyatrolardır. Aktivitelerin modellenmesi şu şekildedir :
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
+```javascript
+{
+    id:string,
+    name:string,
+    activityType:string,
+    description:string,
+    duration:string | null,
+    genre:string,
+    startingDate:string,
+    endDate:string,
+    rating: [
+        {
+            userId:string;
+            ratingPoint:number;
+        }
+    ],
+    tickets: [
+        city : string,
+        seances : [
+            {
+                id:string,
+                isSoldOut:boolean,
+                startDate:string,
+                endDate:string,
+                url:string,
+                location: {
+                    address:string,
+                    name:string,
+                    nameSlug:string
+                }
+            }
+        ]
+    ]
+}
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Kullanıcıların modellenmesi şu şekildedir :
+```javascript
+{
+    email:string;
+    firstName:string;
+    lastName:string;
+    photoUrl:string;
+    theme?:string | undefined;
+}
+```
+
+Eğer kullanıcı bir bileti kaydettiyse bunun modellenmesi ise şu şekildedir :
+
+```javascript
+{
+    activityId:string;
+    seanceId:string;
+    userId:string;
+}
+```
+
+Uygulama üzerindeki sayfalar ve açıklamaları şu şekildedir :
+- Anasayfa
+    - Anasayfa üzerinde rating puanına göre popüler olan ilk 10 aktiviteler gösterilmektedir.
+- Aktivite Showroom
+    - Sayfa içerisinde yüklenen verilere göre şehir , mekan , tür ve tarih bilgilerine göre filtreleme yapabileceğiniz alan mevcuttur. Aşağı doğru kaydırıldığında veriler yirmişer şeklinde yüklenmektedir.
+- Aktivite Detay
+    - Aktivitenin hangi şehirlerde gösterime çıktığı , kesin bir gösterim süresi varsa gösterim süresi , türü , başlangıç ve bitiş tarihleri , açıklaması ve puanlama sistemi mevcuttur.
+    - Şehirlere göre tarihi geçmemiş ve seans yeri dolmamış biletler üzerinden biletinial.com üzerinden biletinizi alabilirsiniz. Eğer kullanıcı giriş yapmışsa bileti aldıktan sonra tekrardan uygulamaya geri dönerek bileti kaydedebilir
+    - Aktivitenin süresi geçmişse sistemde yine de yer almaktadır fakat aktivite showroom üzerinden gözükmemektedir.
+    - Aktivitenin türüyle aynı olan altı tane aktivite de aşağıda gösterilmektedir.
+- Ayarlar
+    - Kullanıcı eğer giriş yapmışsa tema ve şifre güncellemesi yapabilir
+- Satın Alınan Biletler
+    - Kullanıcı satın almaya karar vermiş aktiviteleri kaydettiği bilgileri burada detaylı bir şekilde görüntülenmektedir.

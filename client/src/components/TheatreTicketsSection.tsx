@@ -76,11 +76,15 @@ const TheatreTicketsSection: FC<TheatreTicketsSectionProps> = ({
   };
 
   const filteredTickets = useMemo(() => {
-    return activity.tickets.filter((ticket) => {
-      ticket.seances.filter(
-        (seance) => new Date(seance.startDate).getTime() > Date.now()
-      ).length !== 0;
+
+    activity.tickets.forEach((ticket) => {
+
+      ticket.seances = ticket.seances.filter(
+        (seance) => (new Date(seance.startDate) > new Date(Date.now()) )
+      );
     });
+
+    return activity.tickets
   }, [activity]);
 
   return (

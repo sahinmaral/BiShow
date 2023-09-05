@@ -70,12 +70,18 @@ const TheatreDetail: FC = () => {
 
   const countOfSeancesOfActivityThatIsNotOutdated = useMemo(() => {
     if (activityDetail) {
-      const concattedData = activityDetail.tickets
-        .map((ticket) => ticket.seances)
-        .reduce((result, arr) => result.concat(arr), [])
-        .filter((seance) => new Date(seance.startDate).getTime() > Date.now());
+      let count = 0;
 
-      return concattedData.length;
+      activityDetail.tickets.forEach((ticket) => {
+
+        ticket.seances = ticket.seances.filter(
+          (seance) => (new Date(seance.startDate) > new Date(Date.now()) )
+        );
+
+        count += ticket.seances.length;
+      });
+
+      return count;
     }
   }, [activityDetail]);
 
@@ -190,6 +196,7 @@ const TheatreDetail: FC = () => {
               activityDetail={activityDetail}
               setActivityDetail={setActivityDetail}
             />
+
             {countOfSeancesOfActivityThatIsNotOutdated !== 0 && (
               <TheatreTicketsSection activity={activityDetail} />
             )}
