@@ -1,7 +1,7 @@
 import { FC, MouseEvent } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setModalVisibilityToggle } from "../redux/app/appSlice";
 import { useToaster } from "../context/ToasterProvider";
 import BoughtTicketType from "../types/BoughtTicketType";
