@@ -51,7 +51,6 @@ const Home: FC = () => {
       {!fetchResultAtPage.errorMessage && (
         <Fragment>
           <SlickList
-            isLoading={fetchResultAtPage.isLoading}
             mainTitle="Tiyatro"
             mainRedirectUrl="/tiyatro"
             data={slickListDatas.theatres}

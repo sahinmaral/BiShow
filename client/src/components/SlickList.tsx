@@ -12,13 +12,11 @@ type SlickListProps = {
   mainTitle: string;
   mainRedirectUrl: string;
   data: ISlickListData[];
-  isLoading: boolean;
 };
 
 const SlickList: FC<SlickListProps> = ({
   mainTitle,
   mainRedirectUrl,
-  isLoading,
   data,
 }) => {
   const settings = {
@@ -62,7 +60,7 @@ const SlickList: FC<SlickListProps> = ({
   );
 
   useEffect(() => {
-    if(data.length > 0){
+    if (data.length > 0) {
       setCardDatas(data);
     }
   }, [data]);
@@ -84,28 +82,30 @@ const SlickList: FC<SlickListProps> = ({
         <Slider {...settings}>
           {cardDatas.map((item) => {
             if (typeof item === "number") {
-              return (
-                <div className="group px-2" key={uuidv4()}>
-                  <div className="rounded-lg bg-gray-300 dark:bg-gray-700 w-[210px] h-[280px] flex justify-center items-center animate-pulse">
+            return (
+              <div className="group px-2" key={uuidv4()}>
+                <div className="flex justify-center w-full">
+                  <div className="rounded-lg bg-gray-300 dark:bg-gray-700 max-sm:w-3/4 w-full h-[280px] flex justify-center items-center animate-pulse">
                     <FontAwesomeIcon
                       icon={faImage}
                       size="2xl"
                       className="dark:text-gray-600"
                     />
                   </div>
-                  <div className="mt-[2.5em] flex flex-col items-center">
-                    <div className="h-2.5 w-full bg-gray-200 rounded-full dark:bg-gray-700 mt-3"></div>
-                    <div className="h-2.5 w-3/4 bg-gray-200 rounded-full dark:bg-gray-700 mt-3"></div>
-                  </div>
                 </div>
-              );
+                <div className="flex flex-col items-center mt-3">
+                  <div className="h-2.5 sm:w-3/4 w-1/2 bg-gray-200 rounded-full dark:bg-gray-700 mt-3"></div>
+                  <div className="h-2.5 sm:w-3/5 w-1/3 bg-gray-200 rounded-full dark:bg-gray-700 mt-3"></div>
+                </div>
+              </div>
+            );
             } else {
               return (
                 <Link to={item.redirectUrl} className="group" key={uuidv4()}>
-                  <div className="px-2">
+                  <div className="px-2 flex flex-col items-center">
                     <img
                       src={item.imageUrl}
-                      className="max-sm:w-full h-[280px] object-cover rounded-lg block"
+                      className="max-sm:w-3/4 w-full h-[280px] rounded-lg block"
                     />
                     <p className="font-semibold mt-3 text-gray-800 dark:text-white text-center group-hover:text-cornflower-blue-700">
                       {item.title}

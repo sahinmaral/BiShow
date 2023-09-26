@@ -14,7 +14,7 @@ const RegisterPage: FC = () => {
   const { setInfoWithMessage, setDangerWithMessage } = useToaster();
 
   const registerUser = (values: RegisterUserType) => {
-    //TODO : addUserToUserCollection fonksiyonu hata verirse authentication uzerinde kaydedilen kullanicinin silinmesi gerekiyor.
+    //BUG : addUserToUserCollection fonksiyonu hata verirse authentication uzerinde kaydedilen kullanicinin silinmesi gerekiyor.
     fetchRegisterUser(values.email, values.password)
       .then((fetchRegisterResult) => {
         addUserToUserCollection(fetchRegisterResult.user.uid, {
