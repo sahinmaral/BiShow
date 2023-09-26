@@ -4,6 +4,10 @@
     @apply !flex !items-center !justify-center !rounded-full !w-[50px] !h-[50px] !bg-gray-200 !-mt-5;
 }
 
+.slick-list .slick-track{
+    @apply !translate-x-0;
+}
+
 .slick-next:before,.slick-prev:before{
     @apply !text-black;
 }

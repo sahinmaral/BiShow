@@ -19,8 +19,6 @@ const NavbarMenuLinks: FC = () => {
     };
   }, [pageWidth]);
 
-  //FIXME: 640px gecerken cok ufak acilip kapanma efekti oluyor (muhtelemelen transition-opacity dolayi).
-
   return (
     <Fragment>
       <ul

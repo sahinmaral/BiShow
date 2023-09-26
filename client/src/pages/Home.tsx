@@ -12,7 +12,6 @@ import {
 } from "../redux/app/appSlice";
 import CustomAlert from "../components/CustomAlert";
 import AlertTypeEnum from "../enums/AlertTypeEnum";
-import LoadingSlickList from "../components/LoadingSlickList";
 import HomepageHeader from "../components/HomepageHeader";
 
 const Home: FC = () => {
@@ -37,37 +36,28 @@ const Home: FC = () => {
       });
   }, []);
 
-  //FIXME : Kucuk genisliklerde yuklendigince slick list item aralarinda bayagi bosluk olusuyor
-  //FIXME : Genislik ile oynandiginda glitch oluyor
-
   return (
     <Fragment>
       <Helmet>
         <title>Anasayfa - {constants.APP_MAIN_TITLE}</title>
       </Helmet>
-      {fetchResultAtPage.isLoading && (
-        <Fragment>
-          <HomepageHeader />
-          <LoadingSlickList mainTitle="Tiyatro" mainRedirectUrl="/tiyatro" />
-        </Fragment>
-      )}
+      <HomepageHeader />
       {!fetchResultAtPage.isLoading && fetchResultAtPage.errorMessage && (
         <CustomAlert
           alertType={AlertTypeEnum.Danger}
           message={fetchResultAtPage.errorMessage}
         />
       )}
-      {!fetchResultAtPage.isLoading && !fetchResultAtPage.errorMessage && (
+      {!fetchResultAtPage.errorMessage && (
         <Fragment>
-          <HomepageHeader />
           <SlickList
+            isLoading={fetchResultAtPage.isLoading}
             mainTitle="Tiyatro"
             mainRedirectUrl="/tiyatro"
             data={slickListDatas.theatres}
           />
         </Fragment>
       )}
-
     </Fragment>
   );
 };

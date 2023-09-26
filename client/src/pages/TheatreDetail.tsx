@@ -127,9 +127,8 @@ const TheatreDetail: FC = () => {
               {activityDetail.name} - {constants.APP_MAIN_TITLE}
             </title>
           </Helmet>
-          {/* FIXME: Activity uzerinden herhangi bir sey secmeye calisildiginda arkadaki resmi seciyor. */}
           <div className="relative inline-block">
-            <div className="absolute flex md:flex-row flex-col top-0 left-0 w-full h-full pointer-events-none bg-black bg-opacity-70">
+            <div className="absolute flex md:flex-row flex-col top-0 left-0 w-full h-full pointer-events-auto bg-black bg-opacity-70">
               <img
                 src={activityDetail.thumbnail}
                 className="max-md:absolute md:top-5 top-16 max-md:left-1/2 max-md:-translate-x-1/2 rounded-lg scale-100 md:scale-75 md:w-fit w-[200px]"

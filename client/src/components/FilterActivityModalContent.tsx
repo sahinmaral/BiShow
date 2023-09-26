@@ -34,10 +34,8 @@ const FilterActivityModalContent: FC<FilterActivityModalContentProps> = ({
     return JSON.parse(modalContent.data) as string[];
   }, [modalContent.data]);
 
-  //TODO: Scroll , radio button larin oldugu div icerisinde yer almalidir.
-
   return (
-    <div className="relative bg-white rounded-lg shadow dark:bg-gray-700 w-[400px] h-[500px] overflow-y-scroll">
+    <div className="relative bg-white rounded-lg shadow dark:bg-gray-700 w-[400px]">
       <div className="flex items-start justify-between p-7 border-b rounded-t dark:border-gray-600">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
           {modalContent.title}
@@ -52,7 +50,7 @@ const FilterActivityModalContent: FC<FilterActivityModalContentProps> = ({
         </button>
       </div>
 
-      <div className="p-6 space-y-6">
+      <div className="p-6 space-y-6 overflow-y-scroll h-[500px]">
         {filterActivityData.map((item) => {
           return (
             <div className="flex items-center mb-4" key={uuidv4()}>
